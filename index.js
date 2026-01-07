@@ -4,15 +4,14 @@ const { default: mongoose } = require("mongoose");
 const routes = require("./routes/index.route");
 // Cấu hình env
 dotenv.config();
-
+const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT || 3001;
-
 
 // Kết nối mongoose
 const database = require("./config/database");
 database.connectMongoose();
-
+app.use(bodyParser.json());
 routes(app);
 app.listen(port, () => {
   console.log("Server running in port", port);
