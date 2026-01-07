@@ -8,16 +8,9 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 
-mongoose
-  .connect(
-    "mongodb+srv://nguyenhung2k4gh_db_user:admin@cluster0.sltwzof.mongodb.net/webnhuc"
-  )
-  .then(() => {
-    console.log("Kết nối thành công!");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// Kết nối mongoose
+const database = require("./config/database");
+database.connectMongoose();
 
 app.get("/", (req, res) => {
   res.send("hrj hrj r");
