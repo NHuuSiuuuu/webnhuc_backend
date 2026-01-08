@@ -32,3 +32,41 @@ module.exports.createAccount = async (req, res) => {
     });
   }
 };
+
+// Hàm cập nhật account
+module.exports.updateAccount = async (req, res) => {
+  try {
+    const accountId = req.params.id;
+    const data = req.body;
+
+    if (!accountId) {
+      return res.status(400).json({
+        message: "The accountId is required",
+      });
+    }
+    const result = await AccountService.updateAccount(accountId, data);
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+// Hàm xóa
+module.exports.deleteAccount = async (req, res) => {
+  try {
+    const accountId = req.params.id;
+    if (!accountId) {
+      return res.status(400).json({
+        message: "The accountId is required",
+      });
+    }
+    const result = await AccountService.deleteAccount(accountId);
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(400).json({
+      message: e,
+    });
+  }
+};

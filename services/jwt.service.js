@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config();
 
 module.exports.generalAccessToken = async (payload) => {
   console.log("payload", payload);
@@ -6,7 +8,7 @@ module.exports.generalAccessToken = async (payload) => {
     {
       payload,
     },
-    "access_token",
+    process.env.ACCESS_TOKEN,
     { expiresIn: "1h" }
   );
   return accessToken;
@@ -17,7 +19,7 @@ module.exports.generalRefreshToken = async (payload) => {
     {
       payload,
     },
-    "refresh_token",
+    process.env.REFRESH_TOKEN,
     {
       expiresIn: "365d",
     }

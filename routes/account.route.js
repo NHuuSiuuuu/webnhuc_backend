@@ -4,6 +4,10 @@ const router = express.Router();
 
 const controller = require("../controllers/account.controller");
 
-router.post("/account", controller.createAccount);
+router.post("/create", controller.createAccount);
+
+router.patch("/update/:id", controller.updateAccount);
+
+router.delete("/delete/:id", controller.deleteAccount);
 
 module.exports = router;

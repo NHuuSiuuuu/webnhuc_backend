@@ -4,7 +4,7 @@ const authRoute = require("./auth.route");
 
 module.exports = (app) => {
   app.use("/api", productRoute);
-  app.use("/api", accountRoute);
+  app.use("/api/account", accountRoute);
 
 //   Auth
   app.use("/api", authRoute);
