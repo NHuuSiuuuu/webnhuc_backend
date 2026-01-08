@@ -1,6 +1,6 @@
-const AccountService = require("../services/account.service");
+const AuthService = require("../services/auth.service");
 
-module.exports.createAccount = async (req, res) => {
+module.exports.login = async (req, res) => {
   try {
     // console.log(req.body);
     const { fullName, email, password, passwordConfirm, phone } = req.body; // thằng passwordConfirm này ko lưu trong model nó chỉ so sánh với password thôi
@@ -24,7 +24,7 @@ module.exports.createAccount = async (req, res) => {
     }
 
     // Gọi service xử lý tạo Account và trả kết quả cho client
-    const result = await AccountService.createAccount(req.body);
+    const result = await AuthService.Login(req.body);
     return res.status(200).json(result);
   } catch (e) {
     return res.status(404).json({

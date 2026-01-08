@@ -5,9 +5,12 @@ const accountSchema = new mongoose.Schema(
     fullName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    token: { type: String},
+    token: { type: String },
     phone: { type: String, required: true },
-    role_id: { type: String},
+    role_id: { type: String },
+
+    access_token: { type: String, require: true },
+    refresh_token: { type: String, require: true },
 
     deleted: {
       type: Boolean,
