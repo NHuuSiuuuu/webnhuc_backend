@@ -79,3 +79,36 @@ module.exports.deleteProduct = async (req, res) => {
     });
   }
 };
+
+// [GET] Chi tiết sản phẩm
+// http://localhost:3001/api/product/detail/:id
+module.exports.detailProduct = async (req, res) => {
+  try {
+    const idProduct = req.params.id;
+    if (!idProduct) {
+      res.status(400).json({
+        status: "ERR",
+        message: "The idProduct is required",
+      });
+    }
+    const result = await ProductService.detailProduct(idProduct);
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(500).json({
+      message: message.e || e,
+    });
+  }
+};
+
+// [GET] Danh sách các sản phẩm
+// http://localhost:3001/api/product/products
+module.exports.products = async (req, res) => {
+  try {
+    const result = await ProductService.products();
+    return res.status(200).json(result);
+  } catch {
+    return res.status(500).json({
+      message: e.message,
+    });
+  }
+};

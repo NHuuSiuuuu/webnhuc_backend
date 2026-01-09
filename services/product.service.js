@@ -90,3 +90,42 @@ module.exports.deleteProduct = async () => {
     throw e;
   }
 };
+
+// [GET] Chi tiết sản phẩm
+// http://localhost:3001/api/product/detail/:id
+module.exports.detailProduct = async (id) => {
+  try {
+    const find = {
+      _id: id,
+      deleted: false,
+    };
+    const product = await ProductModel.findOne(find);
+    console.log(product);
+    if (product) {
+      return {
+        status: "OK",
+        product,
+      };
+    }
+  } catch (e) {
+    throw e;
+  }
+};
+
+// [GET] Danh sách các sản phẩm
+// http://localhost:3001/api/product/products
+module.exports.products = async () => {
+  try {
+    const products = await ProductModel.find({ deleted: false });
+    console.log(products);
+    if (products) {
+      return {
+        status: "OK",
+        message: "SUCCESS",
+        products,
+      };
+    }
+  } catch (e) {
+    throw e;
+  }
+};
