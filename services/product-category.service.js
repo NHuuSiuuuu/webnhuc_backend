@@ -1,0 +1,122 @@
+const ProductCategoryModel = require("../models/product-category.model");
+
+// [CREATE] Tạo danh mục sản phẩm
+// http://localhost:3001/api/category-product/create
+module.exports.create = async (data) => {
+  const { title, description, thumbnail, status, position } = data;
+  const newCategoryProduct = await ProductCategoryModel.create({
+    title,
+    description,
+    thumbnail,
+    status,
+    position,
+  });
+  if (newCategoryProduct) {
+    return {
+      status: "OK",
+      message: "SUCCESS",
+      data: newCategoryProduct,
+    };
+  }
+
+  try {
+  } catch (e) {
+    throw e;
+  }
+};
+
+// [PATCH] Sửa danh mục sản phẩm
+// http://localhost:3001/api/category-product/update/:id
+module.exports.update = async (id, data) => {
+  try {
+    const checkProductCategory = await ProductCategoryModel.findById(id);
+    if (!checkProductCategory) {
+      return {
+        status: "ERR",
+        message: "The category product is not defined",
+      };
+    }
+    const updateCategoryProduct = await ProductCategoryModel.findByIdAndUpdate(
+      id,
+      data,
+      { new: true }
+    );
+    return {
+      status: "OK",
+      message: "SUCCESS",
+      updateCategoryProduct,
+    };
+  } catch (e) {
+    throw e;
+  }
+};
+
+// [PATCH] Xóa danh mục sản phẩm
+// http://localhost:3001/api/category-product/delete/:id
+module.exports.delete = async (id) => {
+  try {
+    const checkProductCategory = await ProductCategoryModel.findById(id);
+    if (!checkProductCategory) {
+      return {
+        status: "ERR",
+        message: "The category product is not defined",
+      };
+    }
+    const deleteCategoryProduct = await ProductCategoryModel.findByIdAndUpdate(
+      id,
+      { status: "inactive" },
+      { new: true }
+    );
+    return {
+      status: "OK",
+      message: "SUCCESS",
+      deleteCategoryProduct,
+    };
+  } catch (e) {
+    throw e;
+  }
+};
+
+// [GET] Chi tiết danh mục sản phẩm
+// http://localhost:3001/api/category-product/detail/:id
+module.exports.detailProductCategory = async (id) => {
+  try {
+    const productCategory = await ProductCategoryModel.findById(id);
+    if (productCategory) {
+      return {
+        status: "OK",
+        productCategory,
+      };
+    }
+  } catch (e) {
+    throw e;
+  }
+};
+
+// [GET] Danh sách các danh mục sản phẩm
+// http://localhost:3001/api/category-product/productCategories?page=1
+module.exports.productCategories = async (limit, page) => {
+  try {
+    const productCategories = await ProductCategoryModel.find({
+      deleted: false,
+    })
+      .limit(limit)
+      .skip(page * limit);
+
+    if (productCategories) {
+      const totalProductCategory = await ProductCategoryModel.countDocuments({
+        deleted: false,
+      });
+
+      return {
+        status: "OK",
+        productCategories,
+        total: totalProductCategory,
+        pageCurrent: Number(page + 1),
+        totalPage: Math.ceil(totalProductCategory / limit),
+      };
+    }
+  } catch (e) {
+    throw e;
+  }
+};

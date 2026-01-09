@@ -99,7 +99,6 @@ module.exports.detailProduct = async (id) => {
   try {
     const find = {
       _id: id,
-      deleted: false,
     };
     const product = await ProductModel.findOne(find);
     console.log(product);
@@ -115,7 +114,7 @@ module.exports.detailProduct = async (id) => {
 };
 
 // [GET] Danh sách các sản phẩm
-// http://localhost:3001/api/product/products
+// http://localhost:3001/api/product/products?page....
 module.exports.products = async (limit = 2, page = 0) => {
   try {
     const products = await ProductModel.find({ deleted: false })
