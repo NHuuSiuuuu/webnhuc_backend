@@ -1,5 +1,6 @@
 const AuthService = require("../services/auth.service");
 
+// http://localhost:3001/api/login
 module.exports.login = async (req, res) => {
   try {
     // console.log(req.body);

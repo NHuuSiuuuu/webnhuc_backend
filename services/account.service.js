@@ -85,7 +85,7 @@ module.exports.deleteAccount = async (id) => {
         message: "The user is not defined",
       };
     }
-    await AccountModel.findByIdAndDelete(id);
+    // await AccountModel.findByIdAndDelete(id);
     return {
       status: "OK",
       message: "DELETE USER SUCCESS",

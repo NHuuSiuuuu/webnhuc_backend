@@ -57,6 +57,7 @@ module.exports.updateAccount = async (req, res) => {
 module.exports.deleteAccount = async (req, res) => {
   try {
     const accountId = req.params.id;
+    const token = req.headers;
     if (!accountId) {
       return res.status(400).json({
         message: "The accountId is required",
