@@ -15,11 +15,11 @@ const productSchema = new mongoose.Schema({
   thumbnail: String,
   featured: String,
   position: Number,
-//   slug: {
-//     type: String,
-//     slug: "title", // san-pham-1
-//     unique: true, // chỉ tạo slug duy nhất
-//   },
+  //   slug: {
+  //     type: String,
+  //     slug: "title", // san-pham-1
+  //     unique: true, // chỉ tạo slug duy nhất
+  //   },
 
   //  ai tạo - ngày tạo
   //   createBy: {
@@ -43,10 +43,10 @@ const productSchema = new mongoose.Schema({
   //     },
   //   ],
 
-  //   deleted: {
-  //     type: Boolean,
-  //     default: false,
-  //   },
+  deleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Product = mongoose.model("Product", productSchema, "Product");
