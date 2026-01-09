@@ -13,6 +13,7 @@ module.exports.createProduct = async (req, res) => {
       thumbnail,
       featured,
       position,
+      active
     } = req.body;
 
     if (

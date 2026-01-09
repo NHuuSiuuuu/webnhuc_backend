@@ -13,6 +13,7 @@ module.exports.createProduct = async (data) => {
       thumbnail,
       featured,
       position,
+      status
     } = data;
 
     // Tạo sản phẩm
@@ -25,6 +26,7 @@ module.exports.createProduct = async (data) => {
       thumbnail,
       featured,
       position,
+      status
     });
 
     if (newProduct) {
