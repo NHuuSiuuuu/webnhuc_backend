@@ -114,15 +114,22 @@ module.exports.detailProduct = async (id) => {
 
 // [GET] Danh sách các sản phẩm
 // http://localhost:3001/api/product/products
-module.exports.products = async () => {
+module.exports.products = async (limit = 2, page = 0) => {
   try {
-    const products = await ProductModel.find({ deleted: false });
-    console.log(products);
+    const products = await ProductModel.find({ deleted: false })
+      .limit(limit)
+      .skip(limit * page);
+
+    // Tổng sản phẩm
+    const totalProducts = await ProductModel.countDocuments({ deleted: false });
     if (products) {
       return {
         status: "OK",
         message: "SUCCESS",
         products,
+        total: totalProducts,
+        pageCurrent: Number(page + 1),
+        totalPage: Math.ceil(totalProducts / limit),
       };
     }
   } catch (e) {

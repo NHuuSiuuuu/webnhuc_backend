@@ -104,7 +104,8 @@ module.exports.detailProduct = async (req, res) => {
 // http://localhost:3001/api/product/products
 module.exports.products = async (req, res) => {
   try {
-    const result = await ProductService.products();
+    const { limit, page } = req.query;
+    const result = await ProductService.products(Number(limit), Number(page));
     return res.status(200).json(result);
   } catch {
     return res.status(500).json({
