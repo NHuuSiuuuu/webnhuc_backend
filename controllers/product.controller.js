@@ -13,7 +13,7 @@ module.exports.createProduct = async (req, res) => {
       thumbnail,
       featured,
       position,
-      active
+      active,
     } = req.body;
 
     if (
@@ -105,10 +105,17 @@ module.exports.detailProduct = async (req, res) => {
 // http://localhost:3001/api/product/products
 module.exports.products = async (req, res) => {
   try {
-    const { limit, page } = req.query;
-    const result = await ProductService.products(Number(limit), Number(page));
+    const { limit, page, sort, filter } = req.query;
+    // Lấy sort trên url:sort=price:asc từ dạng string ==> mảng ==> obj rồi sử dụng truy vấn với sort
+
+    const result = await ProductService.products(
+      Number(limit) || 4,
+      Number(page) || 0,
+      sort,
+      filter
+    );
     return res.status(200).json(result);
-  } catch {
+  } catch (e) {
     return res.status(500).json({
       message: e.message,
     });

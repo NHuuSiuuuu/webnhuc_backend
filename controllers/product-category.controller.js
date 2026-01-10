@@ -84,8 +84,8 @@ module.exports.productCategories = async (req, res) => {
   try {
     const { limit = 2, page=0 } = req.query;
     const result = await ProductCategoryService.productCategories(
-      Number(limit),
-      Number(page)
+      Number(limit) || 2,
+      Number(page) || 0
     );
     return res.status(200).json(result);
   } catch (e) {

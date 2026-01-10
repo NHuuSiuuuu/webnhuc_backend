@@ -13,7 +13,7 @@ module.exports.createProduct = async (data) => {
       thumbnail,
       featured,
       position,
-      status
+      status,
     } = data;
 
     // Tạo sản phẩm
@@ -26,7 +26,7 @@ module.exports.createProduct = async (data) => {
       thumbnail,
       featured,
       position,
-      status
+      status,
     });
 
     if (newProduct) {
@@ -115,11 +115,55 @@ module.exports.detailProduct = async (id) => {
 
 // [GET] Danh sách các sản phẩm
 // http://localhost:3001/api/product/products?page....
-module.exports.products = async (limit = 2, page = 0) => {
+module.exports.products = async (limit, page, sort, filter) => {
   try {
+    // Sắp xếp
+    // http://localhost:3001/api/product/products?page=0&sort=price:asc
+    // console.log("sort: ", sort); //sort:   price:desc => dang string
+    const sortArr = sort ? sort.split(":") : null; // chuyển sang mảng cắt từ dấu :
+    // console.log(sortArr); // [ 'price', 'asc' ]
+
+    // Sắp xếp
+    if (sort) {
+      const objSort = {};
+      objSort[sortArr[0]] = sortArr[1]; // luc nay objSort : { price: 'desc' }
+      const productsSort = await ProductModel.find({ deleted: false })
+        .limit(limit)
+        .skip(limit * page)
+        .sort(objSort);
+      return {
+        status: "OK",
+        message: "SUCCESS",
+        productsSort,
+      };
+    }
+
+    // Lọc
+    // http://localhost:3001/api/product/products?page=0&filter=status:active
+    const filterArr = filter ? filter.split(":") : null;
+    if (filter) {
+      const objFilter = {};
+      objFilter[filterArr[0]] = filterArr[1];
+      console.log(objFilter); //{ status: 'active' }
+
+      const filterProducts = await ProductModel.find({
+        deleted: false,
+        ...objFilter,
+      })
+        .limit(limit)
+        .skip(limit * page);
+
+      return {
+        status: "OK",
+        message: "SUCCESS",
+        filterProducts,
+      };
+    }
+
     const products = await ProductModel.find({ deleted: false })
       .limit(limit)
-      .skip(limit * page);
+      .skip(limit * page)
+      .sort({ title: 1 });
 
     // Tổng sản phẩm
     const totalProducts = await ProductModel.countDocuments({ deleted: false });
