@@ -2,10 +2,18 @@ const express = require("express");
 
 const router = express.Router();
 
+const multer = require("multer");
+const storageMulter = require("../helpers/storageMulter");
+const upload = multer({ storage: storageMulter() });
+
 const productController = require("../controllers/product.controller");
 
 // Thêm
-router.post("/create", productController.createProduct);
+router.post(
+  "/create",
+  upload.single("thumbnail"),
+  productController.createProduct
+);
 
 // Sửa
 router.patch("/update/:id", productController.updateProduct);

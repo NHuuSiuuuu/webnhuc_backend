@@ -16,20 +16,20 @@ module.exports.createProduct = async (req, res) => {
       active,
     } = req.body;
 
-    if (
-      !title ||
-      !description ||
-      !price ||
-      !discountPercentage ||
-      !stock ||
-      !thumbnail ||
-      !featured ||
-      !position
-    ) {
-      return res.status(400).json({
-        message: "The input is required",
-      });
-    }
+    // if (
+    //   !title ||
+    //   !description ||
+    //   !price ||
+    //   !discountPercentage ||
+    //   !stock ||
+    //   !thumbnail ||
+    //   !featured ||
+    //   !position
+    // ) {
+    //   return res.status(400).json({
+    //     message: "The input is required",
+    //   });
+    // }
 
     const result = await ProductService.createProduct(req.body);
     return res.status(200).json(result);
@@ -109,7 +109,7 @@ module.exports.products = async (req, res) => {
     // Lấy sort trên url:sort=price:asc từ dạng string ==> mảng ==> obj rồi sử dụng truy vấn với sort
 
     const result = await ProductService.products(
-      Number(limit) || 4,
+      Number(limit) || 20,
       Number(page) || 0,
       sort,
       filter
