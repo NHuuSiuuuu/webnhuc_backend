@@ -16,11 +16,8 @@ const port = process.env.PORT || 3001;
 app.use(cors());
 
 // Dùng thằng này để truy cập vào link ảnh: http://localhost:3001/uploads/filename.jpg
-const path = require("path")
-app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "public/uploads"))
-);
+const path = require("path");
+app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 
 // Kết nối mongoose
 const database = require("./config/database");
