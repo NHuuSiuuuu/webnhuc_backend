@@ -4,7 +4,7 @@ const ProductModel = require("../models/product.model");
 // http://localhost:3001/api/product/create
 module.exports.createProduct = async (data) => {
   try {
-    const {
+    let {
       title,
       description,
       price,
@@ -16,7 +16,11 @@ module.exports.createProduct = async (data) => {
       status,
     } = data;
 
-    // Tạo sản phẩm
+    if (!position) {
+      const countProduct = await ProductModel.countDocuments();
+      position = countProduct + 1;
+    }
+
     const newProduct = await ProductModel.create({
       title,
       description,
@@ -29,13 +33,13 @@ module.exports.createProduct = async (data) => {
       status,
     });
 
-    if (newProduct) {
-      return {
-        status: "OK",
-        message: "SUCCESS",
-        data: newProduct,
-      };
-    }
+    console.log(data);
+
+    return {
+      status: "OK",
+      message: "SUCCESS",
+      data: newProduct,
+    };
   } catch (e) {
     throw e;
   }

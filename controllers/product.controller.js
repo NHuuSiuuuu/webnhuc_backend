@@ -4,35 +4,32 @@ const ProductService = require("../services/product.service");
 // http://localhost:3001/api/product/create
 module.exports.createProduct = async (req, res) => {
   try {
-    const {
-      title,
-      description,
-      price,
-      discountPercentage,
-      stock,
-      thumbnail,
-      featured,
-      position,
-      active,
-    } = req.body;
+    const { title, price, discountPercentage, stock, thumbnail } = req.body;
 
-    // if (
-    //   !title ||
-    //   !description ||
-    //   !price ||
-    //   !discountPercentage ||
-    //   !stock ||
-    //   !thumbnail ||
-    //   !featured ||
-    //   !position
-    // ) {
-    //   return res.status(400).json({
-    //     message: "The input is required",
-    //   });
-    // }
+    if (!title) {
+      return res.status(400).json({ message: "Title is required" });
+    }
+
+    if (price === undefined || isNaN(price)) {
+      return res.status(400).json({ message: "Price must be a number" });
+    }
+
+    if (discountPercentage === undefined || isNaN(discountPercentage)) {
+      return res
+        .status(400)
+        .json({ message: "Discount percentage must be a number" });
+    }
+
+    if (stock === undefined || isNaN(stock)) {
+      return res.status(400).json({ message: "Stock must be a number" });
+    }
+
+    if (!thumbnail) {
+      return res.status(400).json({ message: "Thumbnail is required" });
+    }
 
     const result = await ProductService.createProduct(req.body);
-    return res.status(200).json(result);
+    return res.status(201).json(result);
   } catch (e) {
     return res.status(500).json({
       message: e.message || e,
