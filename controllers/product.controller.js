@@ -4,7 +4,7 @@ const ProductService = require("../services/product.service");
 // http://localhost:3001/api/product/create
 module.exports.createProduct = async (req, res) => {
   try {
-    const { title, price, discountPercentage, stock, thumbnail } = req.body;
+    const { title, price, discountPercentage, stock } = req.body;
 
     if (!title) {
       return res.status(400).json({ message: "Title is required" });
@@ -24,9 +24,6 @@ module.exports.createProduct = async (req, res) => {
       return res.status(400).json({ message: "Stock must be a number" });
     }
 
-    if (!thumbnail) {
-      return res.status(400).json({ message: "Thumbnail is required" });
-    }
 
     const result = await ProductService.createProduct(req.body);
     return res.status(201).json(result);

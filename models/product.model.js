@@ -12,7 +12,10 @@ const productSchema = new mongoose.Schema({
   price: Number,
   discountPercentage: Number,
   stock: Number,
-  thumbnail: String,
+  thumbnail: {
+    type: [String],
+    // default: [],
+  },
   status: String,
   featured: String,
   position: Number,

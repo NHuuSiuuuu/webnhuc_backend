@@ -1,4 +1,6 @@
 const express = require("express");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const router = express.Router();
 
@@ -7,12 +9,12 @@ const multer = require("multer");
 
 const upload = multer();
 const cloudinary = require("cloudinary").v2;
-const streamifier = require("streamifier");
+
 const uploadCloud = require("../middleware/uploadCloud.middleware");
 cloudinary.config({
-  cloud_name: "dhvyer5es",
-  api_key: "865256347474483",
-  api_secret: "xepiZMsmuMbFBDPN9JuTh0KO96Y",
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_KEY,
+  api_secret: process.env.CLOUD_SECRET,
 });
 
 const productController = require("../controllers/product.controller");
@@ -20,7 +22,7 @@ const productController = require("../controllers/product.controller");
 // Thêm
 router.post(
   "/create",
-  upload.single("thumbnail"),
+  upload.array("thumbnail", 10),
   uploadCloud.uploadFile,
   productController.createProduct
 );
