@@ -24,7 +24,6 @@ module.exports.createProduct = async (req, res) => {
       return res.status(400).json({ message: "Stock must be a number" });
     }
 
-
     const result = await ProductService.createProduct(req.body);
     return res.status(201).json(result);
   } catch (e) {
@@ -103,7 +102,7 @@ module.exports.products = async (req, res) => {
     // Lấy sort trên url:sort=price:asc từ dạng string ==> mảng ==> obj rồi sử dụng truy vấn với sort
 
     const result = await ProductService.products(
-      Number(limit) || 20,
+      Number(limit) || 10,
       Number(page) || 0,
       sort,
       filter

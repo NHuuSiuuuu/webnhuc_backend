@@ -28,7 +28,12 @@ router.post(
 );
 
 // Sửa
-router.patch("/update/:id", productController.updateProduct);
+router.patch(
+  "/update/:id",
+  upload.array("thumbnail", 10),
+  uploadCloud.uploadFile,
+  productController.updateProduct
+);
 
 // Xóa mềm (Chỉ thay đổi trường deleted)
 router.patch("/delete/:id", productController.deleteProduct);

@@ -73,7 +73,7 @@ module.exports.upDateProduct = async (id, data) => {
 
 // [PATCH] Xóa sản phẩm (xóa mềm)
 // http://localhost:3001/api/product/delete/:id
-module.exports.deleteProduct = async () => {
+module.exports.deleteProduct = async (id) => {
   try {
     const checkProduct = await ProductModel.findById(id);
 
