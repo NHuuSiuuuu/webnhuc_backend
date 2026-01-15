@@ -22,7 +22,12 @@ router.post(
   ProductCategoryController.create
 );
 
-router.patch("/update/:id", ProductCategoryController.update);
+router.patch(
+  "/update/:id",
+  upload.array("thumbnail", 2),
+  uploadCloud.uploadFile,
+  ProductCategoryController.update
+);
 
 router.patch("/delete/:id", ProductCategoryController.delete);
 

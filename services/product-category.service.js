@@ -69,7 +69,7 @@ module.exports.delete = async (id) => {
     }
     const deleteCategoryProduct = await ProductCategoryModel.findByIdAndUpdate(
       id,
-      { status: "inactive" },
+      { deleted: "true" },
       { new: true }
     );
     return {
