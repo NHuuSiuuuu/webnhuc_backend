@@ -4,18 +4,18 @@ mongoose.plugin(slug);
 
 const productCategorySchema = new mongoose.Schema(
   {
-    title: String, 
+    title: String,
     description: {
-        type: String,
-        default: ""
+      type: String,
+      default: "",
     },
-    thumbnail: String,
+    thumbnail: [String],
     status: String,
     position: Number,
     slug: {
       type: String,
-      slug: "title", 
-      unique: true   // chỉ tạo slug duy nhất
+      slug: "title",
+      unique: true, // chỉ tạo slug duy nhất
     },
     deleted: {
       type: Boolean,
@@ -28,7 +28,10 @@ const productCategorySchema = new mongoose.Schema(
   }
 );
 
-
-const ProductCategory = mongoose.model("ProductCategory", productCategorySchema, "products-category"); // Đối số thứ 3 là bảng colection
+const ProductCategory = mongoose.model(
+  "ProductCategory",
+  productCategorySchema,
+  "products-category"
+); // Đối số thứ 3 là bảng colection
 
 module.exports = ProductCategory;

@@ -3,7 +3,12 @@ const ProductCategoryModel = require("../models/product-category.model");
 // [CREATE] Tạo danh mục sản phẩm
 // http://localhost:3001/api/category-product/create
 module.exports.create = async (data) => {
-  const { title, description, thumbnail, status, position } = data;
+  let { title, description, thumbnail, status, position } = data;
+
+  if (!position) {
+    const countCategory = await ProductCategoryModel.countDocuments();
+    position = countCategory + 1;
+  }
   const newCategoryProduct = await ProductCategoryModel.create({
     title,
     description,

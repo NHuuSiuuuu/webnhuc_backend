@@ -5,11 +5,11 @@ const ProductCategoryService = require("../services/product-category.service");
 module.exports.create = async (req, res) => {
   try {
     const { title, description, thumbnail, status, position } = req.body;
-    if (!title || !description || !thumbnail || !status || !position) {
-      return res.status(400).json({
-        message: "The input is required",
-      });
-    }
+    // if (!title || !description || !thumbnail || !status || !position) {
+    //   return res.status(400).json({
+    //     message: "The input is required",
+    //   });
+    // }
     const result = await ProductCategoryService.create(req.body);
     return res.status(200).json(result);
   } catch (e) {
@@ -82,9 +82,9 @@ module.exports.detail = async (req, res) => {
 // http://localhost:3001/api/category-product/productCategories?page=1
 module.exports.productCategories = async (req, res) => {
   try {
-    const { limit = 2, page=0 } = req.query;
+    const { limit = 10, page = 0 } = req.query;
     const result = await ProductCategoryService.productCategories(
-      Number(limit) || 2,
+      Number(limit) || 10,
       Number(page) || 0
     );
     return res.status(200).json(result);
