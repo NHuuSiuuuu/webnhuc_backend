@@ -102,11 +102,12 @@ module.exports.products = async (req, res) => {
     // Lấy sort trên url:sort=price:asc từ dạng string ==> mảng ==> obj rồi sử dụng truy vấn với sort
 
     const result = await ProductService.products(
-      Number(limit) || 10,
+      Number(limit) || 5,
       Number(page) || 0,
       sort,
       filter
     );
+    
     return res.status(200).json(result);
   } catch (e) {
     return res.status(500).json({

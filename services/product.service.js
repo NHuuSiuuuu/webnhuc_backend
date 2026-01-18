@@ -121,53 +121,49 @@ module.exports.detailProduct = async (id) => {
 // http://localhost:3001/api/product/products?page....
 module.exports.products = async (limit, page, sort, filter) => {
   try {
-    // Sắp xếp
-    // http://localhost:3001/api/product/products?page=0&sort=price:asc
-    // console.log("sort: ", sort); //sort:   price:desc => dang string
-    const sortArr = sort ? sort.split(":") : null; // chuyển sang mảng cắt từ dấu :
-    // console.log(sortArr); // [ 'price', 'asc' ]
+    const find = {
+      deleted: false,
+    };
 
-    // Sắp xếp
-    if (sort) {
-      const objSort = {};
-      objSort[sortArr[0]] = sortArr[1]; // luc nay objSort : { price: 'desc' }
-      const productsSort = await ProductModel.find({ deleted: false })
-        .limit(limit)
-        .skip(limit * page)
-        .sort(objSort);
-      return {
-        status: "OK",
-        message: "SUCCESS",
-        productsSort,
-      };
-    }
-
-    // Lọc
-    // http://localhost:3001/api/product/products?page=0&filter=status:active
-    const filterArr = filter ? filter.split(":") : null;
+    /* ======================
+      Lọc (filter=status:active)
+    ====================== */
     if (filter) {
-      const objFilter = {};
-      objFilter[filterArr[0]] = filterArr[1];
-      console.log(objFilter); //{ status: 'active' }
+      // Nếu chỉ có 1 filter
+      if (typeof filter == "string") {
+        // Dùng cú pháp destructuring
+        const [field, value] = filter.split(":");
+        find[field] = value;
+      }
 
-      const filterProducts = await ProductModel.find({
-        deleted: false,
-        ...objFilter,
-      })
-        .limit(limit)
-        .skip(limit * page);
-
-      return {
-        status: "OK",
-        message: "SUCCESS",
-        filterProducts,
-      };
+      // Nếu có nhiều filter - nhiều query param trùng tên sẽ trả về ARRAY
+      if (Array.isArray(filter)) {
+        filter.forEach((item) => {
+          const [filed, value] = item.split(":");
+          find[filed] = value;
+        });
+      }
     }
 
-    const products = await ProductModel.find({ deleted: false })
+    /* ======================
+      Sắp xếp (sort=price:asc)
+    ====================== */
+    let objSort = { title: 1 }; // Mặc định sắp xếp A-Z
+    if (sort) {
+      const [field, order] = sort.split(":"); // [price, asc]
+      if (order === "asc") {
+        objSort = { [field]: 1 }; // { price: 1 }
+      } else {
+        objSort = { [field]: -1 };
+      }
+    }
+
+    // console.log(find);
+
+    const products = await ProductModel.find(find)
       .limit(limit)
       .skip(limit * page)
-      .sort({ title: 1 });
+      .sort(objSort);
 
     // Tổng sản phẩm
     const totalProducts = await ProductModel.countDocuments({ deleted: false });
