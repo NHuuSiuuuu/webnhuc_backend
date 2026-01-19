@@ -1,9 +1,34 @@
 const ProductCategoryModel = require("../models/product-category.model");
 
+// Lấy danh sách dạng TREE
+module.exports.getTree = async () => {
+  const categories = await ProductCategoryModel.find({ deleted: false }).lean(); // Dùng lean để trả về json thuần
+  console.log(categories);
+  function buildTree(parentId = null) {
+    return categories
+      .filter((item) =>
+        parentId === null
+          ? item.parent_id === null
+          : item.parent_id?.toString() === parentId,
+      )
+      .map((item) => ({
+        ...item,
+        children: buildTree(item._id.toString()),
+      }));
+  }
+  const tree = buildTree();
+
+  // IN RA KẾT QUẢ TREE
+  console.log("CATEGORY TREE:");
+  console.log(JSON.stringify(tree, null, 2));
+
+  return tree;
+};
+
 // [CREATE] Tạo danh mục sản phẩm
 // http://localhost:3001/api/category-product/create
 module.exports.create = async (data) => {
-  let { title, description, thumbnail, status, position } = data;
+  let { title, description, thumbnail, status, position, parent_id } = data;
 
   if (!position) {
     const countCategory = await ProductCategoryModel.countDocuments();
@@ -15,6 +40,7 @@ module.exports.create = async (data) => {
     thumbnail,
     status,
     position,
+    parent_id,
   });
   if (newCategoryProduct) {
     return {
@@ -44,7 +70,7 @@ module.exports.update = async (id, data) => {
     const updateCategoryProduct = await ProductCategoryModel.findByIdAndUpdate(
       id,
       data,
-      { new: true }
+      { new: true },
     );
     return {
       status: "OK",
@@ -70,7 +96,7 @@ module.exports.delete = async (id) => {
     const deleteCategoryProduct = await ProductCategoryModel.findByIdAndUpdate(
       id,
       { deleted: "true" },
-      { new: true }
+      { new: true },
     );
     return {
       status: "OK",

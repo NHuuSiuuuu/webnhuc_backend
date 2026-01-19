@@ -1,10 +1,26 @@
 const ProductCategoryService = require("../services/product-category.service");
 
+// Hàm getTree
+module.exports.getTree = async (req, res) => {
+  try {
+    const tree = await ProductCategoryService.getTree();
+
+    return res.status(200).json({
+      success: true,
+      data: tree,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message,
+    });
+  }
+};
+
 // [CREATE] Tạo danh mục sản phẩm
 // http://localhost:3001/api/category-product/create
 module.exports.create = async (req, res) => {
   try {
-    const { title, description, thumbnail, status, position } = req.body;
+    // const { title, description, thumbnail, status, position ,} = req.body;
     // if (!title || !description || !thumbnail || !status || !position) {
     //   return res.status(400).json({
     //     message: "The input is required",
@@ -85,7 +101,7 @@ module.exports.productCategories = async (req, res) => {
     const { limit = 10, page = 0 } = req.query;
     const result = await ProductCategoryService.productCategories(
       Number(limit) || 10,
-      Number(page) || 0
+      Number(page) || 0,
     );
     return res.status(200).json(result);
   } catch (e) {

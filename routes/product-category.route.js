@@ -15,18 +15,20 @@ cloudinary.config({
 
 const ProductCategoryController = require("../controllers/product-category.controller.js");
 
+router.get("/tree", ProductCategoryController.getTree);
+
 router.post(
   "/create",
   upload.array("thumbnail", 2),
   uploadCloud.uploadFile,
-  ProductCategoryController.create
+  ProductCategoryController.create,
 );
 
 router.patch(
   "/update/:id",
   upload.array("thumbnail", 2),
   uploadCloud.uploadFile,
-  ProductCategoryController.update
+  ProductCategoryController.update,
 );
 
 router.patch("/delete/:id", ProductCategoryController.delete);
