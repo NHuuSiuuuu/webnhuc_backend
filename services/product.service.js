@@ -14,6 +14,7 @@ module.exports.createProduct = async (data) => {
       featured,
       position,
       status,
+      category_id,
     } = data;
 
     if (!position) {
@@ -31,6 +32,7 @@ module.exports.createProduct = async (data) => {
       featured,
       position,
       status,
+      category_id,
     });
 
     console.log(data);
@@ -86,7 +88,7 @@ module.exports.deleteProduct = async (id) => {
     const deleteProduct = await ProductModel.findByIdAndUpdate(
       id,
       { deleted: true },
-      { new: true }
+      { new: true },
     );
     return {
       status: "OK",

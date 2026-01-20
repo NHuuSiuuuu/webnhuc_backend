@@ -4,7 +4,7 @@ const ProductService = require("../services/product.service");
 // http://localhost:3001/api/product/create
 module.exports.createProduct = async (req, res) => {
   try {
-    const { title, price, discountPercentage, stock } = req.body;
+    const { title, price, discountPercentage, stock, category_id } = req.body;
 
     if (!title) {
       return res.status(400).json({ message: "Title is required" });
@@ -105,9 +105,9 @@ module.exports.products = async (req, res) => {
       Number(limit) || 5,
       Number(page) || 0,
       sort,
-      filter
+      filter,
     );
-    
+
     return res.status(200).json(result);
   } catch (e) {
     return res.status(500).json({

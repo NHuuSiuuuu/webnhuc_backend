@@ -4,10 +4,11 @@ mongoose.plugin(slug);
 
 const productSchema = new mongoose.Schema({
   title: String,
-  //   category_id: {
-  //     type: String,
-  //     default: "",
-  //   },
+  category_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+    default: null,
+  },
   description: String,
   price: Number,
   discountPercentage: Number,
