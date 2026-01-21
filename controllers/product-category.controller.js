@@ -98,10 +98,14 @@ module.exports.detail = async (req, res) => {
 // http://localhost:3001/api/category-product/productCategories?page=1
 module.exports.productCategories = async (req, res) => {
   try {
-    const { limit = 10, page = 0 } = req.query;
+    const { limit, page, filter, sort } = req.query;
+    console.log(filter);
+
     const result = await ProductCategoryService.productCategories(
-      Number(limit) || 10,
+      Number(limit) ||4,
       Number(page) || 0,
+      filter,
+      sort,
     );
     return res.status(200).json(result);
   } catch (e) {

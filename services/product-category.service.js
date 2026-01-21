@@ -126,13 +126,33 @@ module.exports.detailProductCategory = async (id) => {
 
 // [GET] Danh sách các danh mục sản phẩm
 // http://localhost:3001/api/category-product/productCategories?page=1
-module.exports.productCategories = async (limit, page) => {
+module.exports.productCategories = async (limit, page, filter, sort) => {
   try {
-    const productCategories = await ProductCategoryModel.find({
-      deleted: false,
-    })
+    /* ======================
+      Filter (filter=status:active)
+    ====================== */
+    const find = { deleted: false };
+    if (filter) {
+      let [field, status] = filter.split(":");
+      find[field] = status;
+    }
+    /* ======================
+      Sắp xếp (sort=position:asc)
+    ====================== */
+    const objSort = {};
+    if (sort) {
+      let [field, order] = sort.split(":");
+      if (order === "asc") {
+        objSort[field] = 1;
+      } else {
+        objSort[field] = -1;
+      }
+    }
+
+    const productCategories = await ProductCategoryModel.find(find)
       .limit(limit)
-      .skip(page * limit);
+      .skip(page * limit)
+      .sort(objSort);
 
     if (productCategories) {
       const totalProductCategory = await ProductCategoryModel.countDocuments({
