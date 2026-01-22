@@ -21,7 +21,7 @@ module.exports.Login = async (accountLogin) => {
     // 2.  Nếu có email: So sánh xem pw đã nhập và pw trong database khác gì nhau
     const comparePassword = await bcrypt.compare(
       password,
-      checkAccount.password
+      checkAccount.password,
     );
     //   console.log("comparePassword", comparePassword);
     // 3. Nếu không bằng nhau
@@ -35,11 +35,13 @@ module.exports.Login = async (accountLogin) => {
     // access token
     const access_token = await jwtService.generalAccessToken({
       id: checkAccount.id,
+      role_id: checkAccount.role_id,
     });
 
     // refresh token
     const refresh_token = await jwtService.generalRefreshToken({
       id: checkAccount.id,
+      role_id: checkAccount.role_id,
     });
     console.log("access_token", access_token);
     console.log("refresh_token", refresh_token);

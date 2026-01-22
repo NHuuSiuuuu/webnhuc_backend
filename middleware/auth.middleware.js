@@ -21,11 +21,11 @@ module.exports.authMiddleWare = (req, res, next) => {
     }
     console.log("account", account);
     // account {
-    //     payload: { id: '695fdcc629dd3a79167420bc' },
+    //     payload: { id: '695fdcc629dd3a79167420bc', role_id: '0123456789'},
     //     iat: 1767890225,
     //     exp: 1767893825
     // }
-
+    // -------------------------------------------------------------------------
     // const { payload } = account;
     // // Nếu là admin thì cho đi tiếp
     // if (payload.isAdmin) {

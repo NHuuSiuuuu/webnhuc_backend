@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 module.exports.createAccount = async (newUser) => {
   try {
-    const { fullName, email, password, phone } = newUser;
+    const { fullName, email, password, phone, role_id } = newUser;
     const checkAccount = await AccountModel.findOne({
       email: email,
     });
@@ -25,6 +25,7 @@ module.exports.createAccount = async (newUser) => {
       email,
       password: hash,
       phone,
+      role_id,
     });
 
     // Trả về kết quả
