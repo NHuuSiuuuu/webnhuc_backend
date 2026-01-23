@@ -10,4 +10,6 @@ router.post("/create", roleController.create);
 router.patch("/update/:id", roleController.update);
 router.delete("/delete/:id", roleController.delete);
 
+router.patch("/permissions", roleController.permissions);
+
 module.exports = router;

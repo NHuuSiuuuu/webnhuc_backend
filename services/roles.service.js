@@ -86,3 +86,17 @@ module.exports.detail = async (id) => {
     throw e;
   }
 };
+
+module.exports.permissions = async (data) => {
+  try {
+    // data này là mảng bắt buộc bên frontend gửi về là mảng
+    for (const item of data) {
+      await RoleModel.updateOne(
+        { _id: item.id },
+        { permissions: item.permissions },
+      );
+    }
+  } catch (e) {
+    throw e;
+  }
+};
