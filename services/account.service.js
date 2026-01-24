@@ -75,6 +75,33 @@ module.exports.updateAccount = async (id, data) => {
   }
 };
 
+// Hàm chi tiết
+module.exports.detailAccount = async (id) => {
+  try {
+    const checkAccount = await AccountModel.findById(id);
+
+    console.log("checkAccount", checkAccount);
+
+    // // Kiểm tra Account này có tồn tại hay không
+    if (!checkAccount) {
+      return {
+        status: "ERR",
+        message: "Account is not defined",
+      };
+    }
+
+    const detail = await AccountModel.findById(id);
+    // Trả về kết quả
+    return {
+      status: "OK",
+      message: "SUCCESS",
+      data: detail,
+    };
+  } catch (e) {
+    throw e;
+  }
+};
+
 // Hàm xóa
 module.exports.deleteAccount = async (id) => {
   try {
@@ -90,6 +117,20 @@ module.exports.deleteAccount = async (id) => {
     return {
       status: "OK",
       message: "DELETE USER SUCCESS",
+    };
+  } catch (e) {
+    throw e;
+  }
+};
+
+module.exports.index = async () => {
+  try {
+    const data = await AccountModel.find({
+      deleted: false,
+    });
+    return {
+      status: "OK",
+      data,
     };
   } catch (e) {
     throw e;

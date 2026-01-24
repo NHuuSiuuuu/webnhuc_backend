@@ -28,7 +28,7 @@ module.exports.createAccount = async (req, res) => {
     const result = await AccountService.createAccount(req.body);
     return res.status(200).json(result);
   } catch (e) {
-    return res.status(404).json({
+    return res.status(500).json({
       message: e,
     });
   }
@@ -48,7 +48,27 @@ module.exports.updateAccount = async (req, res) => {
     const result = await AccountService.updateAccount(accountId, data);
     return res.status(200).json(result);
   } catch (e) {
-    return res.status(404).json({
+    return res.status(500).json({
+      message: e,
+    });
+  }
+};
+
+
+// Hàm chi tiết tài khoản
+module.exports.detailAccount = async (req, res) => {
+  try {
+    const accountId = req.params.id;
+
+    if (!accountId) {
+      return res.status(400).json({
+        message: "The accountId is required",
+      });
+    }
+    const result = await AccountService.detailAccount(accountId);
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(500).json({
       message: e,
     });
   }
@@ -67,8 +87,20 @@ module.exports.deleteAccount = async (req, res) => {
     const result = await AccountService.deleteAccount(accountId);
     return res.status(200).json(result);
   } catch (e) {
-    return res.status(400).json({
+    return res.status(500).json({
       message: e,
+    });
+  }
+};
+
+module.exports.index = async (req, res) => {
+  try {
+    const result = await AccountService.index()
+    return res.status(200).json(result)
+
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message,
     });
   }
 };

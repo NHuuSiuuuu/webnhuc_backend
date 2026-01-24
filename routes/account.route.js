@@ -6,6 +6,10 @@ const controller = require("../controllers/account.controller");
 const authMiddleWare = require("../middleware/auth.middleware");
 router.post("/create", controller.createAccount);
 
+router.get("/index", controller.index);
+
+router.get("/detail/:id", controller.detailAccount);
+
 router.patch("/update/:id", controller.updateAccount);
 
 router.delete(
