@@ -4,6 +4,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 const multer = require("multer");
 
+const { authMiddleWare } = require("../middleware/auth.middleware.js");
+const { checkPermission } = require("../middleware/permission.middleware.js");
+
 const upload = multer();
 const cloudinary = require("cloudinary").v2;
 const uploadCloud = require("../middleware/uploadCloud.middleware");
@@ -35,6 +38,11 @@ router.patch("/delete/:id", ProductCategoryController.delete);
 
 router.post("/detail/:id", ProductCategoryController.detail);
 
-router.post("/productCategories", ProductCategoryController.productCategories);
+router.post(
+  "/productCategories",
+  authMiddleWare,
+  checkPermission("product_category_view"),
+  ProductCategoryController.productCategories,
+);
 
 module.exports = router;

@@ -1,7 +1,9 @@
 const AccountModel = require("../models/account.model");
+const RoleModel = require("../models/roles.model");
 const bcrypt = require("bcrypt");
 
 const jwtService = require("../services/jwt.service");
+const jwt = require("jsonwebtoken");
 
 module.exports.Login = async (accountLogin) => {
   try {
@@ -31,25 +33,56 @@ module.exports.Login = async (accountLogin) => {
         message: "The password is incorrect", // Mật khẩu không đúng
       };
     }
-    console.log("đăng nhập thành côgn");
+    const role = await RoleModel.findById(checkAccount.role_id);
+    // console.log(role);
+    console.log("đăng nhập thành công");
     // access token
     const access_token = await jwtService.generalAccessToken({
       id: checkAccount.id,
-      role_id: checkAccount.role_id,
+      permissions: role.permissions,
     });
 
     // refresh token
     const refresh_token = await jwtService.generalRefreshToken({
       id: checkAccount.id,
-      role_id: checkAccount.role_id,
+      permissions: role.permissions,
     });
+    /**
     console.log("access_token", access_token);
     console.log("refresh_token", refresh_token);
+ 
+   */
     return {
       status: "OK",
       message: "SUCCESS",
       access_token: access_token, // trả về user mới login
       refresh_token: refresh_token,
+    };
+  } catch (e) {
+    throw e;
+  }
+};
+
+module.exports.refreshToken = async (refreshToken) => {
+  try {
+    if (!refreshToken) {
+      return {
+        status: "ERR",
+        message: "Refresh token is required",
+      };
+    }
+
+    // Kiểm tra + giải mã + xác thực token
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN);
+    // decoded = { id, permissions, iat, exp }
+
+    const newAccessToken = await jwtService.generalAccessToken({
+      id: decoded.id,
+      permissions: decoded.permissions,
+    });
+    return {
+      status: "OK",
+      access_token: newAccessToken,
     };
   } catch (e) {
     throw e;

@@ -33,3 +33,20 @@ module.exports.login = async (req, res) => {
     });
   }
 };
+
+module.exports.refreshToken = async (req, res) => {
+  try {
+    const { refresh_token } = req.body;
+    const result = await AuthService.refreshToken(refresh_token);
+
+    if (result.status === "ERR") {
+      return res.status(403).json(result);
+    }
+
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message,
+    });
+  }
+};
