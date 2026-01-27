@@ -4,31 +4,32 @@ const AuthService = require("../services/auth.service");
 module.exports.login = async (req, res) => {
   try {
     // console.log(req.body);
-    const { email, password, passwordConfirm, phone } = req.body; // thằng passwordConfirm này ko lưu trong model nó chỉ so sánh với password thôi
+    const { email, password } = req.body; // thằng passwordConfirm này ko lưu trong model nó chỉ so sánh với password thôi
 
     // Kiểm tra email có đúng định dạng hay không
     const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
 
     const isCheckEmail = reg.test(email); // true là hợp lệ - false sai format
-    if (!email || !password || !phone) {
-      return res.status(400).json({
-        message: "The input is required",
+    if (!email || !password) {
+      return res.status(200).json({
+        status: "ERR",
+        message: "Vui lòng nhâp đầy đủ email và mật khẩu",
       });
     } else if (!isCheckEmail) {
-      return res.status(400).json({
-        message: "The input is email",
-      });
-    } else if (password != passwordConfirm) {
-      return res.status(400).json({
-        message: "The password is equal confirmPassword",
+      return res.status(200).json({
+        status: "ERR",
+        message: "Email không đúng định dạng ",
       });
     }
 
     // Gọi service xử lý tạo Account và trả kết quả cho client
     const result = await AuthService.Login(req.body);
+
+    
     return res.status(200).json(result);
   } catch (e) {
-    return res.status(404).json({
+    return res.status(500).json({
+      status: "ERR",
       message: e,
     });
   }

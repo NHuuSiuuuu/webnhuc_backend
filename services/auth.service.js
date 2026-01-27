@@ -16,7 +16,7 @@ module.exports.Login = async (accountLogin) => {
     if (!checkAccount) {
       return {
         status: "ERR",
-        message: "The email is not defined",
+        message: "Email không tồn tại trong hệ thống",
       };
     }
 
@@ -30,7 +30,7 @@ module.exports.Login = async (accountLogin) => {
     if (!comparePassword) {
       return {
         status: "ERR",
-        message: "The password is incorrect", // Mật khẩu không đúng
+        message: "Mật khẩu không đúng", // Mật khẩu không đúng
       };
     }
     const role = await RoleModel.findById(checkAccount.role_id);
