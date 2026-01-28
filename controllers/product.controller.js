@@ -39,13 +39,18 @@ module.exports.updateProduct = async (req, res) => {
   try {
     const idProduct = req.params.id;
     const data = req.body;
+    const idAccount = req.account.id;
     if (!idProduct) {
       return res.status(400).json({
         message: "The idProduct is required",
       });
     }
 
-    const result = await ProductService.upDateProduct(idProduct, data);
+    const result = await ProductService.upDateProduct(
+      idProduct,
+      data,
+      idAccount,
+    );
     return res.status(200).json(result);
   } catch (e) {
     return res.status(500).json({

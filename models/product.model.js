@@ -6,7 +6,7 @@ const productSchema = new mongoose.Schema({
   title: String,
   category_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Product",
+    ref: "category",
     default: null,
   },
   description: String,
@@ -27,26 +27,32 @@ const productSchema = new mongoose.Schema({
   },
 
   //  ai tạo - ngày tạo
-  //   createBy: {
-  //     account_id: String,
-  //     // Thời gian tạo
-  //     createdAt: {
-  //       type: Date,
-  //       default: Date.now(),
-  //     },
-  //   },
+  createBy: {
+    account_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Account",
+    },
+    // Thời gian tạo
+    createdAt: Date,
+  },
 
   //  ai xóa - ngày xóa
-  //   deletedBy: {
-  //     account_id: String,
-  //     deletedAt: Date,
-  //   },
-  //   updatedBy: [
-  //     {
-  //       account_id: String,
-  //       updatedAt: Date,
-  //     },
-  //   ],
+  deletedBy: {
+    account_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Account",
+    },
+    deletedAt: Date,
+  },
+  updatedBy: [
+    {
+      account_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Account",
+      },
+      updatedAt: Date,
+    },
+  ],
 
   deleted: {
     type: Boolean,

@@ -1,4 +1,5 @@
 const ProductModel = require("../models/product.model");
+const AccountModel = require("../models/account.model");
 
 // [CREATE] Thêm sản phẩm
 // http://localhost:3001/api/product/create
@@ -49,7 +50,7 @@ module.exports.createProduct = async (data) => {
 
 // [PATCH] Sửa sản phẩm
 // http://localhost:3001/api/product/update/:id
-module.exports.upDateProduct = async (id, data) => {
+module.exports.upDateProduct = async (id, data, idAccount) => {
   try {
     const checkProduct = await ProductModel.findById(id);
 
@@ -60,9 +61,21 @@ module.exports.upDateProduct = async (id, data) => {
       };
     }
 
-    const updateProduct = await ProductModel.findByIdAndUpdate(id, data, {
-      new: true,
-    });
+    const updateProduct = await ProductModel.findByIdAndUpdate(
+      id,
+      {
+        ...data,
+        $push: {
+          updatedBy: {
+            account_id: idAccount,
+            updatedAt: new Date(),
+          },
+        },
+      },
+      {
+        new: true,
+      },
+    );
     return {
       status: "OK",
       message: "SUCCESS",
@@ -163,6 +176,7 @@ module.exports.products = async (limit, page, sort, filter) => {
     // console.log(find);
 
     const products = await ProductModel.find(find)
+      .populate("updatedBy.account_id", "fullName email") // Chỉ lấy fullName và email thôi
       .limit(limit)
       .skip(limit * page)
       .sort(objSort);
