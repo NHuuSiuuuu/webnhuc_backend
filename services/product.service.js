@@ -3,7 +3,7 @@ const AccountModel = require("../models/account.model");
 
 // [CREATE] Thêm sản phẩm
 // http://localhost:3001/api/product/create
-module.exports.createProduct = async (data) => {
+module.exports.createProduct = async (data, idAccount) => {
   try {
     let {
       title,
@@ -34,9 +34,13 @@ module.exports.createProduct = async (data) => {
       position,
       status,
       category_id,
-    });
 
-    console.log(data);
+      // 👇 createBy
+      createBy: {
+        account_id: idAccount, // lấy từ token
+        createdAt: new Date(),
+      },
+    });
 
     return {
       status: "OK",
@@ -177,6 +181,7 @@ module.exports.products = async (limit, page, sort, filter) => {
 
     const products = await ProductModel.find(find)
       .populate("updatedBy.account_id", "fullName email") // Chỉ lấy fullName và email thôi
+      .populate("createBy.account_id", "fullName email") // Chỉ lấy fullName và email thôi
       .limit(limit)
       .skip(limit * page)
       .sort(objSort);

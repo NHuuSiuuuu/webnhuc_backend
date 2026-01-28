@@ -6,6 +6,7 @@ const router = express.Router();
 
 const multer = require("multer");
 // const storageMulter = require("../helpers/storageMulter");
+const { authMiddleWare } = require("../middleware/auth.middleware");
 
 const upload = multer();
 const cloudinary = require("cloudinary").v2;
@@ -22,26 +23,40 @@ const productController = require("../controllers/product.controller");
 // Thêm
 router.post(
   "/create",
+  authMiddleWare,
   upload.array("thumbnail", 10),
   uploadCloud.uploadFile,
-  productController.createProduct
+  productController.createProduct,
 );
 
 // Sửa
 router.patch(
   "/update/:id",
+  authMiddleWare,
   upload.array("thumbnail", 10),
   uploadCloud.uploadFile,
-  productController.updateProduct
+  productController.updateProduct,
 );
 
 // Xóa mềm (Chỉ thay đổi trường deleted)
-router.patch("/delete/:id", productController.deleteProduct);
+router.patch(
+  "/delete/:id",
+  authMiddleWare,
+  productController.deleteProduct,
+);
 
 // Chi tiết sản phẩm
-router.get("/detail/:id", productController.detailProduct);
+router.get(
+  "/detail/:id",
+  authMiddleWare,
+  productController.detailProduct,
+);
 
 // Danh sách sản phẩm
-router.get("/products", productController.products);
+router.get(
+  "/products",
+  authMiddleWare,
+  productController.products,
+);
 
 module.exports = router;
