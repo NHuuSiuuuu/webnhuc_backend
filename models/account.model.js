@@ -7,7 +7,10 @@ const accountSchema = new mongoose.Schema(
     password: { type: String, required: true },
     token: { type: String },
     phone: { type: String, required: true },
-    role_id: { type: String },
+    role_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Role",
+    },
 
     access_token: { type: String, require: true },
     refresh_token: { type: String, require: true },
@@ -20,7 +23,7 @@ const accountSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const Account = mongoose.model("Account", accountSchema, "Account");

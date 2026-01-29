@@ -54,7 +54,6 @@ module.exports.updateAccount = async (req, res) => {
   }
 };
 
-
 // Hàm chi tiết tài khoản
 module.exports.detailAccount = async (req, res) => {
   try {
@@ -95,12 +94,22 @@ module.exports.deleteAccount = async (req, res) => {
 
 module.exports.index = async (req, res) => {
   try {
-    const result = await AccountService.index()
-    return res.status(200).json(result)
-
+    const result = await AccountService.index();
+    return res.status(200).json(result);
   } catch (e) {
     return res.status(500).json({
       message: e.message,
     });
+  }
+};
+
+// Hàm lấy thông tin tài account đăng nhập
+module.exports.getMe = async (req, res) => {
+  try {
+    const accountId = req.account.id;
+    const result = await AccountService.getMe(accountId);
+    return res.status(200).json(result);
+  } catch (e) {
+    res.status(500).json({ message: e.message });
   }
 };

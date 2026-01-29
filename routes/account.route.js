@@ -28,5 +28,6 @@ router.delete(
 
   controller.deleteAccount,
 );
+router.get("/getMe", controller.getMe);
 
 module.exports = router;
