@@ -6,7 +6,7 @@ const router = express.Router();
 
 const multer = require("multer");
 // const storageMulter = require("../helpers/storageMulter");
-const { authMiddleWare } = require("../middleware/auth.middleware");
+const { checkPermission } = require("../middleware/permission.middleware.js");
 
 const upload = multer();
 const cloudinary = require("cloudinary").v2;
@@ -23,7 +23,7 @@ const productController = require("../controllers/product.controller");
 // Thêm
 router.post(
   "/create",
-  authMiddleWare,
+  checkPermission("product_create"),
   upload.array("thumbnail", 10),
   uploadCloud.uploadFile,
   productController.createProduct,
@@ -32,7 +32,7 @@ router.post(
 // Sửa
 router.patch(
   "/update/:id",
-  authMiddleWare,
+  checkPermission("product_update"),
   upload.array("thumbnail", 10),
   uploadCloud.uploadFile,
   productController.updateProduct,
@@ -41,21 +41,17 @@ router.patch(
 // Xóa mềm (Chỉ thay đổi trường deleted)
 router.patch(
   "/delete/:id",
-  authMiddleWare,
+  checkPermission("product_delete"),
   productController.deleteProduct,
 );
 
 // Chi tiết sản phẩm
-router.get(
-  "/detail/:id",
-  authMiddleWare,
-  productController.detailProduct,
-);
+router.get("/detail/:id", productController.detailProduct);
 
 // Danh sách sản phẩm
 router.get(
   "/products",
-  authMiddleWare,
+  checkPermission("product_view"),
   productController.products,
 );
 

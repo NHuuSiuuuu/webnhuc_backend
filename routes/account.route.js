@@ -3,19 +3,30 @@ const express = require("express");
 const router = express.Router();
 
 const controller = require("../controllers/account.controller");
-const authMiddleWare = require("../middleware/auth.middleware");
-router.post("/create", controller.createAccount);
+const { checkPermission } = require("../middleware/permission.middleware");
 
-router.get("/index", controller.index);
+router.post(
+  "/create",
+  checkPermission("account_create"),
+  controller.createAccount,
+);
+
+router.get("/index", checkPermission("account_view"), controller.index);
 
 router.get("/detail/:id", controller.detailAccount);
 
-router.patch("/update/:id", controller.updateAccount);
+router.patch(
+  "/update/:id",
+
+  checkPermission("account_update"),
+  controller.updateAccount,
+);
 
 router.delete(
   "/delete/:id",
-  authMiddleWare.authMiddleWare,
-  controller.deleteAccount
+  checkPermission("account_delete"),
+
+  controller.deleteAccount,
 );
 
 module.exports = router;

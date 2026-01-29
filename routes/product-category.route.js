@@ -4,7 +4,6 @@ const dotenv = require("dotenv");
 dotenv.config();
 const multer = require("multer");
 
-const { authMiddleWare } = require("../middleware/auth.middleware.js");
 const { checkPermission } = require("../middleware/permission.middleware.js");
 
 const upload = multer();
@@ -22,6 +21,8 @@ router.get("/tree", ProductCategoryController.getTree);
 
 router.post(
   "/create",
+  checkPermission("product_category_create"),
+
   upload.array("thumbnail", 2),
   uploadCloud.uploadFile,
   ProductCategoryController.create,
@@ -29,18 +30,25 @@ router.post(
 
 router.patch(
   "/update/:id",
+  checkPermission("product_category_update"),
+
   upload.array("thumbnail", 2),
   uploadCloud.uploadFile,
   ProductCategoryController.update,
 );
 
-router.patch("/delete/:id", ProductCategoryController.delete);
+router.patch(
+  "/delete/:id",
+  checkPermission("product_category_delete"),
+
+  ProductCategoryController.delete,
+);
 
 router.post("/detail/:id", ProductCategoryController.detail);
 
 router.post(
   "/productCategories",
-  authMiddleWare,
+
   checkPermission("product_category_view"),
   ProductCategoryController.productCategories,
 );
