@@ -1,5 +1,6 @@
 const ProductModel = require("../models/product.model");
 const AccountModel = require("../models/account.model");
+const { default: mongoose } = require("mongoose");
 
 // [CREATE] Thêm sản phẩm
 // http://localhost:3001/api/product/create
@@ -11,6 +12,7 @@ module.exports.createProduct = async (data, idAccount) => {
       price,
       discountPercentage,
       stock,
+      sizes,
       thumbnail,
       featured,
       position,
@@ -22,13 +24,18 @@ module.exports.createProduct = async (data, idAccount) => {
       const countProduct = await ProductModel.countDocuments();
       position = countProduct + 1;
     }
+    if (typeof sizes === "string") {
+      sizes = JSON.parse(sizes);
+    }
+    const totalStock = sizes.reduce((sum, item) => sum + Number(item.stock), 0);
 
     const newProduct = await ProductModel.create({
       title,
       description,
       price,
       discountPercentage,
-      stock,
+      stock: totalStock,
+      sizes,
       thumbnail,
       featured,
       position,
@@ -57,6 +64,7 @@ module.exports.createProduct = async (data, idAccount) => {
 module.exports.upDateProduct = async (id, data, idAccount) => {
   try {
     const checkProduct = await ProductModel.findById(id);
+    let updateData = { ...data };
 
     if (!checkProduct) {
       return {
@@ -65,10 +73,20 @@ module.exports.upDateProduct = async (id, data, idAccount) => {
       };
     }
 
+    if (typeof data.sizes === "string") {
+      updateData.sizes = JSON.parse(data.sizes);
+    }
+    if (data.sizes) {
+      updateData.stock = updateData.sizes.reduce(
+        (sum, item) => sum + Number(item.stock),
+        0,
+      );
+    }
+
     const updateProduct = await ProductModel.findByIdAndUpdate(
       id,
       {
-        ...data,
+        ...updateData,
         $push: {
           updatedBy: {
             account_id: idAccount,
@@ -118,12 +136,18 @@ module.exports.deleteProduct = async (id) => {
 
 // [GET] Chi tiết sản phẩm
 // http://localhost:3001/api/product/detail/:id
-module.exports.detailProduct = async (id) => {
+module.exports.detailProduct = async (param) => {
   try {
-    const find = {
-      _id: id,
-    };
-    const product = await ProductModel.findOne(find);
+    // Kiểm tra xem gửi lên là id hay là slug
+    const checkObject = mongoose.Types.ObjectId.isValid(param);
+
+    // Nếu gửi lên là id thì tìm kiếm theo id, còn nếu là slug thì tìm kiếm theo slug
+    // Vì mongoose khi tìm kiếm theo id thì phải đúng định dạng id 24 kí tự
+    const find = checkObject ? { _id: param } : { slug: param };
+
+    const product = await ProductModel.findOne(find)
+      .populate("updatedBy.account_id", "fullName email") // Chỉ lấy fullName và email thôi
+      .populate("createBy.account_id", "fullName email"); // Chỉ lấy fullName và email thôi;
     console.log(product);
     if (product) {
       return {

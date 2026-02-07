@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 dotenv.config();
+const { authMiddleWare } = require("../middleware/auth.middleware");
 
 const router = express.Router();
 
@@ -23,6 +24,7 @@ const productController = require("../controllers/product.controller");
 // Thêm
 router.post(
   "/create",
+  authMiddleWare,
   checkPermission("product_create"),
   upload.array("thumbnail", 10),
   uploadCloud.uploadFile,
@@ -32,6 +34,7 @@ router.post(
 // Sửa
 router.patch(
   "/update/:id",
+  authMiddleWare,
   checkPermission("product_update"),
   upload.array("thumbnail", 10),
   uploadCloud.uploadFile,
@@ -41,17 +44,18 @@ router.patch(
 // Xóa mềm (Chỉ thay đổi trường deleted)
 router.patch(
   "/delete/:id",
+  authMiddleWare,
   checkPermission("product_delete"),
   productController.deleteProduct,
 );
 
 // Chi tiết sản phẩm
-router.get("/detail/:id", productController.detailProduct);
+router.get("/detail/:param", productController.detailProduct);
 
 // Danh sách sản phẩm
 router.get(
   "/products",
-  checkPermission("product_view"),
+
   productController.products,
 );
 

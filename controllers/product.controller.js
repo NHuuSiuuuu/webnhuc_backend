@@ -4,7 +4,8 @@ const ProductService = require("../services/product.service");
 // http://localhost:3001/api/product/create
 module.exports.createProduct = async (req, res) => {
   try {
-    const { title, price, discountPercentage, stock, category_id } = req.body;
+    const { title, price, discountPercentage, stock, category_id, sizes } =
+      req.body;
     const idAccount = req.account.id;
 
     if (!title) {
@@ -19,10 +20,6 @@ module.exports.createProduct = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Discount percentage must be a number" });
-    }
-
-    if (stock === undefined || isNaN(stock)) {
-      return res.status(400).json({ message: "Stock must be a number" });
     }
 
     const result = await ProductService.createProduct(req.body, idAccount);
@@ -82,20 +79,24 @@ module.exports.deleteProduct = async (req, res) => {
 
 // [GET] Chi tiết sản phẩm
 // http://localhost:3001/api/product/detail/:id
+// [GET] Chi tiết sản phẩm
+// http://localhost:3001/api/product/detail/:param
 module.exports.detailProduct = async (req, res) => {
   try {
-    const idProduct = req.params.id;
-    if (!idProduct) {
-      res.status(400).json({
+    const param = req.params.param;
+
+    if (!param) {
+      return res.status(400).json({
         status: "ERR",
-        message: "The idProduct is required",
+        message: "param is required",
       });
     }
-    const result = await ProductService.detailProduct(idProduct);
+
+    const result = await ProductService.detailProduct(param);
     return res.status(200).json(result);
   } catch (e) {
     return res.status(500).json({
-      message: message.e || e,
+      message: e.message || e,
     });
   }
 };
@@ -108,7 +109,7 @@ module.exports.products = async (req, res) => {
     // Lấy sort trên url:sort=price:asc từ dạng string ==> mảng ==> obj rồi sử dụng truy vấn với sort
 
     const result = await ProductService.products(
-      Number(limit) || 5,
+      Number(limit) || 10,
       Number(page) || 0,
       sort,
       filter,

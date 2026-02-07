@@ -13,6 +13,20 @@ const productSchema = new mongoose.Schema({
   price: Number,
   discountPercentage: Number,
   stock: Number,
+
+  sizes: [
+    {
+      name: {
+        type: String,
+        enum: ["S", "M", "L", "XL"],
+      },
+      stock: {
+        type: Number,
+        min: 0,
+      },
+    },
+  ],
+
   thumbnail: {
     type: [String],
     // default: [],

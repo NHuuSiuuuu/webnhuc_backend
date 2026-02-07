@@ -3,11 +3,12 @@ const accountRoute = require("./account.route");
 const authRoute = require("./auth.route");
 const productCategoryRoute = require("./product-category.route");
 const roleRoute = require("./role.route");
+const cartRoute = require("./cart.route");
 const { authMiddleWare } = require("../middleware/auth.middleware");
 
 module.exports = (app) => {
   // Product
-  app.use("/api/product", authMiddleWare, productRoute);
+  app.use("/api/product", productRoute);
 
   // Product Category
   app.use("/api/category-product", authMiddleWare, productCategoryRoute);
@@ -19,4 +20,6 @@ module.exports = (app) => {
 
   // Roles
   app.use("/api/roles", authMiddleWare, roleRoute);
+
+  app.use("/api/cart", cartRoute);
 };
