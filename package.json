@@ -21,7 +21,8 @@
     "mongoose": "^9.1.2",
     "mongoose-slug-updater": "^3.3.0",
     "multer": "^2.0.2",
-    "streamifier": "^0.1.1"
+    "streamifier": "^0.1.1",
+    "vnpay": "^2.4.4"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"
