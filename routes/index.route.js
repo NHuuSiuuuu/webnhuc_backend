@@ -5,6 +5,8 @@ const productCategoryRoute = require("./product-category.route");
 const roleRoute = require("./role.route");
 const cartRoute = require("./cart.route");
 const shippingMethodRoute = require("./shipping-method.route");
+const paymentRoute = require("./payment.route");
+const orderRoute = require("./order.route");
 const { authMiddleWare } = require("../middleware/auth.middleware");
 
 module.exports = (app) => {
@@ -25,4 +27,10 @@ module.exports = (app) => {
   app.use("/api/cart", cartRoute);
 
   app.use("/api/shipping-method", shippingMethodRoute);
+
+  // payment
+  app.use("/api", paymentRoute);
+
+  // order
+  app.use("/api/order", orderRoute);
 };
