@@ -226,3 +226,179 @@ module.exports.products = async (limit, page, sort, filter) => {
     throw e;
   }
 };
+
+module.exports.getProducts = async (limit, page, sort, filter) => {
+  try {
+    const find = {
+      deleted: false,
+    };
+
+    /* ======================
+    Sau làm sản phẩm nổi bật hay khôgn
+      Lọc (filter=status:active) 
+    ====================== */
+    if (filter) {
+      // Nếu chỉ có 1 filter
+      if (typeof filter == "string") {
+        // Dùng cú pháp destructuring
+        const [field, value] = filter.split(":");
+        find[field] = value;
+      }
+
+      // Nếu có nhiều filter - nhiều query param trùng tên sẽ trả về ARRAY
+      if (Array.isArray(filter)) {
+        filter.forEach((item) => {
+          const [filed, value] = item.split(":");
+          find[filed] = value;
+        });
+      }
+    }
+
+    /* ======================
+      Sắp xếp (sort=price:asc)
+    ====================== */
+    let objSort = { title: 1 }; // Mặc định sắp xếp A-Z
+    if (sort) {
+      let [field, order] = sort.split(":"); // [price, asc]
+      if (field === "createdAt") {
+        field = "createBy.createdAt";
+      }
+
+      if (order === "asc") {
+        objSort = { [field]: 1 }; // { price: 1 }
+      } else {
+        objSort = { [field]: -1 };
+      }
+    }
+    console.log(objSort);
+
+    console.log(limit);
+
+    const products = await ProductModel.find(find)
+      .limit(limit)
+      .skip(limit * (page - 1))
+      .sort(objSort)
+      .select(
+        "title price discountPercentage thumbnail slug stock sizes  createBy.createdAt",
+      );
+
+    // Tổng sản phẩm
+    const totalProducts = await ProductModel.countDocuments({ deleted: false });
+    if (products) {
+      return {
+        status: "OK",
+        message: "SUCCESS",
+        products,
+        total: totalProducts,
+        pageCurrent: Number(page),
+        totalPage: Math.ceil(totalProducts / limit),
+      };
+    }
+  } catch (e) {
+    throw e;
+  }
+};
+
+module.exports.getProductsCategory = async (limit, page, sort, filter, id) => {
+  try {
+    const find = {
+      deleted: false,
+      category_id: id,
+    };
+
+    /* ======================
+    Sau làm sản phẩm nổi bật hay khôgn
+      Lọc (filter=status:active) 
+    ====================== */
+    if (filter) {
+      // Nếu chỉ có 1 filter
+      if (typeof filter == "string") {
+        // Dùng cú pháp destructuring
+        const [field, value] = filter.split(":");
+        find[field] = value;
+      }
+
+      // Nếu có nhiều filter - nhiều query param trùng tên sẽ trả về ARRAY
+      if (Array.isArray(filter)) {
+        filter.forEach((item) => {
+          const [filed, value] = item.split(":");
+          find[filed] = value;
+        });
+      }
+    }
+
+    /* ======================
+      Sắp xếp (sort=price:asc)
+    ====================== */
+    let objSort = { title: 1 }; // Mặc định sắp xếp A-Z
+    if (sort) {
+      let [field, order] = sort.split(":"); // [price, asc]
+      if (field === "createdAt") {
+        field = "createBy.createdAt";
+      }
+
+      if (order === "asc") {
+        objSort = { [field]: 1 }; // { price: 1 }
+      } else {
+        objSort = { [field]: -1 };
+      }
+    }
+    console.log(objSort);
+
+    // console.log(find);
+
+    const products = await ProductModel.find(find)
+      .limit(limit)
+      .skip(limit * (page - 1))
+      .sort(objSort)
+      .select(
+        "title price discountPercentage thumbnail slug stock  createBy.createdAt",
+      );
+
+    // Tổng sản phẩm
+    const totalProducts = await ProductModel.countDocuments({
+      deleted: false,
+      category_id: id,
+    });
+    if (products) {
+      return {
+        status: "OK",
+        message: "SUCCESS",
+        products,
+        total: totalProducts,
+        pageCurrent: Number(page),
+        totalPage: Math.ceil(totalProducts / limit),
+      };
+    }
+  } catch (e) {
+    throw e;
+  }
+};
+
+module.exports.searchProducts = async (keyword) => {
+  try {
+    const find = {
+      deleted: false,
+      title: {
+        $regex: keyword,
+        $options: "i",
+      },
+    };
+    console.log(keyword);
+
+    const products = await ProductModel.find(find)
+      .limit(10)
+
+      .select("title price discountPercentage slug thumbnail");
+
+    if (products) {
+      return {
+        status: "OK",
+        message: "SUCCESS",
+        products,
+      };
+    }
+  } catch (e) {
+    throw e;
+  }
+};

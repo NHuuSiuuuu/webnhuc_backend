@@ -58,5 +58,8 @@ router.get(
 
   productController.products,
 );
+router.get("/", productController.getProducts);
+router.get("/category/:id", productController.getProductsCategory);
 
+router.get("/search/", productController.searchProducts);
 module.exports = router;

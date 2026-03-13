@@ -122,3 +122,61 @@ module.exports.products = async (req, res) => {
     });
   }
 };
+module.exports.getProducts = async (req, res) => {
+  try {
+    const { limit, page, sort, filter } = req.query;
+    // Lấy sort trên url:sort=price:asc từ dạng string ==> mảng ==> obj rồi sử dụng truy vấn với sort
+
+    const result = await ProductService.getProducts(
+      Number(limit) || 5,
+      Number(page) || 1,
+      sort,
+      filter,
+    );
+
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message,
+    });
+  }
+};
+
+module.exports.getProductsCategory = async (req, res) => {
+  try {
+    const { limit, page, sort, filter } = req.query;
+    const id = req.params.id;
+
+    // Lấy sort trên url:sort=price:asc từ dạng string ==> mảng ==> obj rồi sử dụng truy vấn với sort
+
+    const result = await ProductService.getProductsCategory(
+      Number(limit) || 1,
+      Number(page) || 1,
+      sort,
+      filter,
+      id,
+    );
+
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message,
+    });
+  }
+};
+
+module.exports.searchProducts = async (req, res) => {
+  try {
+    const { keyword } = req.query;
+
+    // Lấy sort trên url:sort=price:asc từ dạng string ==> mảng ==> obj rồi sử dụng truy vấn với sort
+
+    const result = await ProductService.searchProducts(keyword);
+
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message,
+    });
+  }
+};

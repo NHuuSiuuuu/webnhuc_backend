@@ -17,7 +17,7 @@ const orderSchema = new mongoose.Schema(
         province: String,
       },
     },
-
+    // shippingMethod: String,
     shippingMethod: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "ShippingMethod",
@@ -46,11 +46,11 @@ const orderSchema = new mongoose.Schema(
     finalPrice: Number,
     totalQuantity: Number,
 
-    // paymentStatus: {
-    //   type: String,
-    //   enum: ["pending", "paid", "failed"],
-    //   default: "pending",
-    // },
+    paymentStatus: {
+      type: String,
+      enum: ["unpaid", "paid", "failed", "refund_pending"],
+      default: "unpaid",
+    },
 
     orderStatus: {
       type: String,
