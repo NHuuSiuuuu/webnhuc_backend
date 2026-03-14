@@ -87,9 +87,9 @@ router.get("/check-payment-vnpay", async (req, res) => {
         },
       },
     );
-    return res.redirect(`http://localhost:5173/orders/success/${vnp_TxnRef}`);
+    return res.redirect(`/orders/success/${vnp_TxnRef}`);
   } else if (vnp_ResponseCode === "24") {
-    return res.redirect(`http://localhost:5173/cart`);
+    return res.redirect(`/cart`);
   } else {
     await OrderModel.updateOne(
       { _id: vnp_TxnRef },

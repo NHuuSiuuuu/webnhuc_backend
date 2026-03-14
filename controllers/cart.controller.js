@@ -5,7 +5,7 @@ module.exports.createCart = async (req, res) => {
     const result = await CartService.createCart(req.body);
     return res.status(200).json(result);
   } catch (e) {
-    return res.status(500).json({
+    return res.status(e.status || 500).json({
       message: e.message,
     });
   }
@@ -47,7 +47,6 @@ module.exports.deleteProductInCart = async (req, res) => {
 module.exports.updateProductInCart = async (req, res) => {
   try {
     const { cart_id, product_id, size_id, quantity } = req.body;
-
 
     const result = await CartService.updateProductInCart(
       cart_id,
