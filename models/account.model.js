@@ -5,15 +5,12 @@ const accountSchema = new mongoose.Schema(
     fullName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    token: { type: String },
     phone: { type: String, required: true },
     role_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Role",
     },
 
-    access_token: { type: String, require: true },
-    refresh_token: { type: String, require: true },
 
     deleted: {
       type: Boolean,

@@ -2,35 +2,65 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
-
+const jwtService = require("../services/jwt.service");
+const AppError = require("../utils/AppError");
 // Để có quyền vào các trang thì phải đi qua được bước xác thưc này
 
-module.exports.authMiddleWare = (req, res, next) => {
-  // jwt.verify() dùng để:
-  // Kiểm tra token có hợp lệ không
-  // Kiểm tra token có bị giả mạo không
-  // Lấy dữ liệu đã được mã hóa trong token
+module.exports.authMiddleWare = async (req, res, next) => {
+  try {
+    // jwt.verify() dùng để:
+    // Kiểm tra token có hợp lệ không
+    // Kiểm tra token có bị giả mạo không
+    // Lấy dữ liệu đã được mã hóa trong token
 
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return res.status(401).json({
-      message: "Missing Authorization header",
+    const refreshToken = req.cookies?.refresh_token;
+    const accessToken = req.cookies?.access_token;
+    // console.log("accessToken", accessToken);
+    // console.log("refreshToken", refreshToken);
+
+    if (!accessToken) {
+      throw new AppError("Chưa đăng nhập", 401);
+    }
+
+    try {
+      // Giải mã access_token
+      const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN);
+      req.account = decoded;
+
+      return next();
+    } catch (e) {
+      // access_token hết hạn -> Thử refresh
+      if (!refreshToken) {
+        throw new AppError("Hết phiên đăng nhập", 401);
+      }
+    }
+
+    try {
+      // Giải mã refresh_token
+      const decodeRefresh = jwt.verify(refreshToken, process.env.REFRESH_TOKEN);
+
+      // Tạo access_token mới
+      const newAccessToken = await jwtService.generalAccessToken({
+        id: decodeRefresh.id,
+        permissions: decodeRefresh.permissions,
+      });
+      res.cookie("access_token", newAccessToken, {
+        httpOnly: true, // Chặn truy cập từ JavaScript (bảo mật hơn)
+        secure: false, // Chỉ gửi trên HTTPS (để đảm bảo an toàn)
+        sameSite: "Strict", // Chống tấn công CSRF
+        maxAge: 15 * 60 * 1000, // 15 phút
+      });
+
+      req.account = decodeRefresh;
+
+      return next();
+    } catch (e) {
+      throw new AppError("Token không hợp lệ", 401);
+    }
+  } catch (e) {
+    return res.status(e.status || 500).json({
+      status: "ERR",
+      message: e.message,
     });
   }
-  const token = authHeader.split(" ")[1]; // jwt.verify() chỉ nhận token không nhận chữ Bearer
-  //   console.log("check token", req.headers.authorization); //Bearer eyJhbGciOiJIUzI1NiIs...: Bearer là tên kiểu xác thực trong HTTP - Kiểu basic nữa nó gửi Username + pw còn bearer gửi token
-  console.log("token", token);
-  // decoded = { id, permissions, iat, exp }
-
-  jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
-    if (err) {
-      console.log("JWT ERROR: ", err.message);
-      return res.status(403).json({
-        message: "The authentication", // Có sự cố xác thực
-      });
-    }
-    req.account = decoded;
-    // console.log("account", account);
-    next();
-  });
 };

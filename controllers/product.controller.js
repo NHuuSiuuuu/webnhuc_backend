@@ -108,7 +108,7 @@ module.exports.products = async (req, res) => {
     const { limit, page, sort, filter } = req.query;
     // Lấy sort trên url:sort=price:asc từ dạng string ==> mảng ==> obj rồi sử dụng truy vấn với sort
 
-    const result = await ProductService.products(
+    const result = await ProductService.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       products(
       Number(limit) || 10,
       Number(page) || 0,
       sort,

@@ -28,8 +28,29 @@ module.exports.createAccount = async (req, res) => {
     const result = await AccountService.createAccount(req.body);
     return res.status(200).json(result);
   } catch (e) {
-    return res.status(500).json({
-      message: e,
+    return res.status(e.status || 500).json({
+      message: e.message,
+    });
+  }
+};
+
+module.exports.createAccountUser = async (req, res) => {
+  try {
+    // console.log(req.body);
+    const { fullName, email, password, passwordConfirm, phone } = req.body;
+
+    // Gọi service xử lý tạo Account và trả kết quả cho client
+    const result = await AccountService.createAccountUser(
+      fullName,
+      email,
+      password,
+      passwordConfirm,
+      phone,
+    );
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(e.status || 500).json({
+      message: e.message,
     });
   }
 };
@@ -107,6 +128,7 @@ module.exports.index = async (req, res) => {
 module.exports.getMe = async (req, res) => {
   try {
     const accountId = req.account.id;
+    
     const result = await AccountService.getMe(accountId);
     return res.status(200).json(result);
   } catch (e) {

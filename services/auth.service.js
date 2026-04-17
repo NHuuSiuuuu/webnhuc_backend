@@ -5,9 +5,8 @@ const bcrypt = require("bcrypt");
 const jwtService = require("../services/jwt.service");
 const jwt = require("jsonwebtoken");
 
-module.exports.Login = async (accountLogin) => {
+module.exports.Login = async ( email, password) => {
   try {
-    const { email, password } = accountLogin;
     const checkAccount = await AccountModel.findOne({
       email: email,
     });
@@ -47,11 +46,8 @@ module.exports.Login = async (accountLogin) => {
       id: checkAccount.id,
       permissions: role.permissions,
     });
-    /**
-    console.log("access_token", access_token);
-    console.log("refresh_token", refresh_token);
- 
-   */
+   
+
     return {
       status: "OK",
       message: "SUCCESS",
@@ -63,28 +59,28 @@ module.exports.Login = async (accountLogin) => {
   }
 };
 
-module.exports.refreshToken = async (refreshToken) => {
-  try {
-    if (!refreshToken) {
-      return {
-        status: "ERR",
-        message: "Refresh token is required",
-      };
-    }
+// module.exports.refreshToken = async (refreshToken) => {
+//   try {
+//     if (!refreshToken) {
+//       return {
+//         status: "ERR",
+//         message: "Refresh token is required",
+//       };
+//     }
 
-    // Kiểm tra + giải mã + xác thực token
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN);
-    // decoded = { id, permissions, iat, exp }
+//     // Kiểm tra + giải mã + xác thực token
+//     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN);
+//     // decoded = { id, permissions, iat, exp }
 
-    const newAccessToken = await jwtService.generalAccessToken({
-      id: decoded.id,
-      permissions: decoded.permissions,
-    });
-    return {
-      status: "OK",
-      access_token: newAccessToken,
-    };
-  } catch (e) {
-    throw e;
-  }
-};
+//     const newAccessToken = await jwtService.generalAccessToken({
+//       id: decoded.id,
+//       permissions: decoded.permissions,
+//     });
+//     return {
+//       status: "OK",
+//       access_token: newAccessToken,
+//     };
+//   } catch (e) {
+//     throw e;
+//   }
+// };

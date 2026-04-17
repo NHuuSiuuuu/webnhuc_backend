@@ -1,11 +1,11 @@
 const RoleModel = require("../models/roles.model");
 const AccountModel = require("../models/account.model");
 
-
 module.exports.checkPermission = (permission) => {
   return async (req, res, next) => {
     try {
       const account_id = req.account.id;
+      console.log("account_id", account_id);
       if (!account_id)
         return res.status(401).json({
           message: "Tài khoản không xác định!",
@@ -16,7 +16,7 @@ module.exports.checkPermission = (permission) => {
 
       // Lấy permission trong database chứ không lấy từ access_token
       const Role = await RoleModel.findById(Account.role_id);
-      console.log("Role trong database: ", Role);
+      // console.log("Role trong database: ", Role);
 
       const permissions = Role.permissions || [];
 
@@ -31,7 +31,6 @@ module.exports.checkPermission = (permission) => {
       return res.status(500).json({
         message: "Lỗi server",
         error: e.message,
-        
       });
     }
   };

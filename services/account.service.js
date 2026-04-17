@@ -1,5 +1,7 @@
 const AccountModel = require("../models/account.model");
+const RoleModel = require("../models/roles.model");
 const bcrypt = require("bcrypt");
+const AppError = require("../utils/AppError");
 
 module.exports.createAccount = async (newUser) => {
   try {
@@ -10,10 +12,7 @@ module.exports.createAccount = async (newUser) => {
 
     // Kiểm tra email tồn tại
     if (checkAccount) {
-      return {
-        status: "ERR",
-        message: "The email is already",
-      };
+      throw new AppError("Email đã tồn tại", 409);
     }
 
     // Mã hóa mật khẩu. 10 Là số lần bcrypt lặp thuật toán băm Số càng lớn → hash càng chậm → khó bị brute-force hơn
@@ -41,6 +40,38 @@ module.exports.createAccount = async (newUser) => {
   }
 };
 
+module.exports.createAccountUser = async (fullName, email, password, phone) => {
+  const checkAccount = await AccountModel.findOne({
+    email: email,
+  });
+
+  // Kiểm tra email tồn tại
+  if (checkAccount) {
+    throw new AppError("Email đã tồn tại", 409);
+  }
+
+  const hash = await bcrypt.hash(password, 10);
+  const userRole = await RoleModel.findOne({ title: "Khách hàng" });
+  console.log(userRole);
+
+  // Tạo tài khoản
+  const createAccount = await AccountModel.create({
+    fullName,
+    email,
+    password: hash,
+    phone,
+    role_id: userRole._id,
+  });
+
+  // Trả về kết quả
+  if (createAccount) {
+    return {
+      status: "OK",
+      message: "Tạo tài khoản thành công",
+      data: createAccount,
+    };
+  }
+};
 // Hàm cập nhật
 module.exports.updateAccount = async (id, data) => {
   try {

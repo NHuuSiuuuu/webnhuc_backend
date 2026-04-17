@@ -9,11 +9,19 @@ const cors = require("cors");
 dotenv.config();
 
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const app = express();
 const port = process.env.PORT || 3001;
 
 // Sử dụng cors
-app.use(cors());
+app.use(cors(
+  {
+    origin: process.env.CLIENT_ORIGIN,
+    credentials:true
+  }
+));
+
+app.use(cookieParser());
 
 // Dùng thằng này để truy cập vào link ảnh: http://localhost:3001/uploads/filename.jpg
 const path = require("path");

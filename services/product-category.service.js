@@ -3,7 +3,7 @@ const ProductCategoryModel = require("../models/product-category.model");
 // Lấy danh sách dạng TREE
 module.exports.getTree = async () => {
   const categories = await ProductCategoryModel.find({ deleted: false }).lean(); // Dùng lean để trả về json thuần
-  console.log(categories);
+  // console.log(categories);
   function buildTree(parentId = null) {
     return categories
       .filter((item) =>
@@ -19,8 +19,8 @@ module.exports.getTree = async () => {
   const tree = buildTree();
 
   // IN RA KẾT QUẢ TREE
-  console.log("CATEGORY TREE:");
-  console.log(JSON.stringify(tree, null, 2));
+  // console.log("CATEGORY TREE:");
+  // console.log(JSON.stringify(tree, null, 2));
 
   return tree;
 };

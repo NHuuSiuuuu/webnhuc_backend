@@ -300,7 +300,7 @@ module.exports.cancelOrder = async (id) => {
     ) {
       throw {
         status: 404,
-        message: "Chỉ có thể hủy đơn khi đang chờ xác nhận hoặc đã xác nhận.",
+        message: "Chỉ có thể hủy đơn khi đang chờ xác nhận.",
       };
     }
 
@@ -431,7 +431,7 @@ const allowedTransitions = {
   cancelled: [],
 };
 
-// ADMIN thay đổi trạng thái (xác nhận, shipping, hoàn thành)
+// Xác nhận đơn hàng
 module.exports.adminUpdateOrderStatus = async ({ id, newOrderStatus }) => {
   try {
     console.log(id);
@@ -498,8 +498,7 @@ module.exports.adminUpdateOrderStatus = async ({ id, newOrderStatus }) => {
     throw e;
   }
 };
-
-// Amin xử lý hoàn tiền
+// Xác nhận đã hoàn tiền
 module.exports.adminRefundOrder = async ({id}) => {
   try {
     // console.log(id);

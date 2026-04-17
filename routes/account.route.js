@@ -11,6 +11,14 @@ router.post(
   controller.createAccount,
 );
 
+// user
+router.post(
+  "/createUser",
+ 
+  controller.createAccountUser,
+);
+
+
 router.get("/index", checkPermission("account_view"), controller.index);
 
 router.get("/detail/:id", controller.detailAccount);

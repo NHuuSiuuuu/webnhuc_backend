@@ -7,6 +7,7 @@ const cartRoute = require("./cart.route");
 const shippingMethodRoute = require("./shipping-method.route");
 const paymentRoute = require("./payment.route");
 const orderRoute = require("./order.route");
+const chatBot = require("./chatbot.route");
 const { authMiddleWare } = require("../middleware/auth.middleware");
 
 module.exports = (app) => {
@@ -16,7 +17,7 @@ module.exports = (app) => {
   // Product Category
   app.use("/api/category-product", authMiddleWare, productCategoryRoute);
 
-  app.use("/api/account", authMiddleWare, accountRoute);
+  app.use("/api/account", accountRoute);
 
   //   Auth
   app.use("/api", authRoute);
@@ -33,4 +34,7 @@ module.exports = (app) => {
 
   // order
   app.use("/api/order", orderRoute);
+
+  // Chat bot
+  app.use("/api/search", chatBot);
 };
