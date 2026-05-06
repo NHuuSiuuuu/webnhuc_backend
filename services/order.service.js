@@ -164,7 +164,7 @@ module.exports.createOrder = async (req) => {
         vnp_IpAddr: req.ip,
         vnp_TxnRef: order._id,
         vnp_OrderInfo: `Thanh toán đơn hàng # ${order._id}`,
-        vnp_ReturnUrl: "http://localhost:3001/api/check-payment-vnpay",
+        vnp_ReturnUrl: `${process.env.SERVER_URL}/api/check-payment-vnpay`,
         vnp_Locale: VnpLocale.VN,
         vnp_CreateDate: dateFormat(new Date()),
         vnp_ExpireDate: dateFormat(tomorrow),
