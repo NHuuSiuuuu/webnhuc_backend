@@ -172,7 +172,7 @@ module.exports.getMe = async (id) => {
   try {
     const data = await AccountModel.findOne({ _id: id, deleted: false })
       .select("fullName email role_id")
-      .populate("role_id", "title description");
+      .populate("role_id", "title description permissions");
     return {
       status: "OK",
       data,

@@ -4,6 +4,7 @@ const router = express.Router();
 
 const controller = require("../controllers/account.controller");
 const { checkPermission } = require("../middleware/permission.middleware");
+const { authMiddleWare } = require("../middleware/auth.middleware");
 
 router.post(
   "/create",
@@ -14,10 +15,9 @@ router.post(
 // user
 router.post(
   "/createUser",
- 
+
   controller.createAccountUser,
 );
-
 
 router.get("/index", checkPermission("account_view"), controller.index);
 
@@ -36,6 +36,6 @@ router.delete(
 
   controller.deleteAccount,
 );
-router.get("/getMe", controller.getMe);
+router.get("/getMe", authMiddleWare, controller.getMe);
 
 module.exports = router;

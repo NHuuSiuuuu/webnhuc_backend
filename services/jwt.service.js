@@ -5,15 +5,14 @@ dotenv.config();
 module.exports.generalAccessToken = async (payload) => {
   // console.log("payload", payload); //payload { id: '6970cba9278861bcd586d05d', role_id: '0123456789' }
   const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN, {
-    expiresIn: "7d",
+    expiresIn: "15m",
   });
   return accessToken;
 };
 
 module.exports.generalRefreshToken = async (payload) => {
   const refresh_token = jwt.sign(payload, process.env.REFRESH_TOKEN, {
-    expiresIn: "365d",
+    expiresIn: 365 * 24 * 60 * 60, 
   });
   return refresh_token;
 };
-

@@ -128,6 +128,8 @@ module.exports.index = async (req, res) => {
 module.exports.getMe = async (req, res) => {
   try {
     const accountId = req.account.id;
+    console.log('accountId',accountId)
+    
     
     const result = await AccountService.getMe(accountId);
     return res.status(200).json(result);

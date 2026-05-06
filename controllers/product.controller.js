@@ -105,14 +105,15 @@ module.exports.detailProduct = async (req, res) => {
 // http://localhost:3001/api/product/products
 module.exports.products = async (req, res) => {
   try {
-    const { limit, page, sort, filter } = req.query;
+    const { limit, page, sort, filter, search } = req.query;
     // Lấy sort trên url:sort=price:asc từ dạng string ==> mảng ==> obj rồi sử dụng truy vấn với sort
 
-    const result = await ProductService.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       products(
+    const result = await ProductService.products(
       Number(limit) || 10,
       Number(page) || 0,
       sort,
       filter,
+      search,
     );
 
     return res.status(200).json(result);
@@ -172,6 +173,20 @@ module.exports.searchProducts = async (req, res) => {
     // Lấy sort trên url:sort=price:asc từ dạng string ==> mảng ==> obj rồi sử dụng truy vấn với sort
 
     const result = await ProductService.searchProducts(keyword);
+
+    return res.status(200).json(result);
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message,
+    });
+  }
+};
+
+module.exports.relatedProducts = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const result = await ProductService.relatedProducts(id);
 
     return res.status(200).json(result);
   } catch (e) {

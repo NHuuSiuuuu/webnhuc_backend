@@ -15,24 +15,20 @@ module.exports.authMiddleWare = async (req, res, next) => {
 
     const refreshToken = req.cookies?.refresh_token;
     const accessToken = req.cookies?.access_token;
-    // console.log("accessToken", accessToken);
-    // console.log("refreshToken", refreshToken);
-
-    if (!accessToken) {
-      throw new AppError("Chưa đăng nhập", 401);
+    // Ưu tiên dùng access_token nếu còn hợp lệ
+    if (accessToken) {
+      try {
+        const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN);
+        req.account = decoded;
+        return next();
+      } catch (e) {
+        // access_token lỗi/hết hạn -> fallback xuống refresh_token
+      }
     }
 
-    try {
-      // Giải mã access_token
-      const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN);
-      req.account = decoded;
-
-      return next();
-    } catch (e) {
-      // access_token hết hạn -> Thử refresh
-      if (!refreshToken) {
-        throw new AppError("Hết phiên đăng nhập", 401);
-      }
+    // Không có access_token hợp lệ thì bắt buộc phải có refresh_token
+    if (!refreshToken) {
+      throw new AppError("Hết phiên đăng nhập", 401);
     }
 
     try {
@@ -49,6 +45,13 @@ module.exports.authMiddleWare = async (req, res, next) => {
         secure: false, // Chỉ gửi trên HTTPS (để đảm bảo an toàn)
         sameSite: "Strict", // Chống tấn công CSRF
         maxAge: 15 * 60 * 1000, // 15 phút
+      });
+      // Set lại refresh_token để gia hạn cookie
+      res.cookie("refresh_token", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "Strict",
+        maxAge: 365 * 24 * 60 * 60 * 1000, // 365 ngày
       });
 
       req.account = decodeRefresh;

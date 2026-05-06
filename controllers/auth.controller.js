@@ -1,6 +1,7 @@
 const AuthService = require("../services/auth.service");
 const jwtService = require("../services/jwt.service");
 const { permissions } = require("./role.controller");
+const AppError = require("../utils/AppError");
 
 // http://localhost:3001/api/login
 module.exports.login = async (req, res) => {
@@ -38,7 +39,7 @@ module.exports.login = async (req, res) => {
         httpOnly: true, // Chặn truy cập từ JavaScript (bảo mật hơn)
         secure: false, // Chỉ gửi trên HTTPS (để đảm bảo an toàn)
         sameSite: "Strict", // Chống tấn công CSRF
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
+        maxAge: 365 * 24 * 60 * 60 * 1000, // 365 ngày
       });
     return res.status(200).json(result);
   } catch (e) {
@@ -82,7 +83,6 @@ module.exports.refreshToken = async (req, res) => {
       throw new AppError("Không có refresh token", 401);
     }
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN);
-
 
     // Tạo access_token mới
     const newAccessToken = await jwtService.generalAccessToken({

@@ -162,12 +162,22 @@ module.exports.detailProduct = async (param) => {
 
 // [GET] Danh sách các sản phẩm
 // http://localhost:3001/api/product/products?page....
-module.exports.products = async (limit, page, sort, filter) => {
+module.exports.products = async (limit, page, sort, filter, search) => {
   try {
     const find = {
       deleted: false,
     };
 
+
+    if (search) {
+      const [field, value] = search.split(":");
+
+      find[field] = {
+        $regex: value,
+        $options: "i", // không phân biệt hoa thường
+      };
+    }
+    console.log("find", find);
     /* ======================
       Lọc (filter=status:active)
     ====================== */
@@ -227,6 +237,7 @@ module.exports.products = async (limit, page, sort, filter) => {
   }
 };
 
+// APi này bên khách hàng
 module.exports.getProducts = async (limit, page, sort, filter) => {
   try {
     const find = {
@@ -396,6 +407,37 @@ module.exports.searchProducts = async (keyword) => {
         status: "OK",
         message: "SUCCESS",
         products,
+      };
+    }
+  } catch (e) {
+    throw e;
+  }
+};
+
+module.exports.relatedProducts = async (id) => {
+  try {
+    const find = {
+      deleted: false,
+      _id: id,
+    };
+
+    const products = await ProductModel.find(find).select("category_id");
+
+    const categoryId = products[0].category_id;
+
+    const relatedProducts = await ProductModel.find({
+      _id: { $ne: id },
+      status: "active",
+      deleted: false,
+    })
+      .select("title price discountPercentage thumbnail slug stock sizes ")
+      .limit(5);
+
+    if (products) {
+      return {
+        status: "OK",
+        message: "SUCCESS",
+        relatedProducts,
       };
     }
   } catch (e) {

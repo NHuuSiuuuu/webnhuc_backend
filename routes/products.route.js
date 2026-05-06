@@ -55,11 +55,19 @@ router.get("/detail/:param", productController.detailProduct);
 // Danh sách sản phẩm
 router.get(
   "/products",
+  authMiddleWare,
 
+  checkPermission("product_view"),
   productController.products,
 );
-router.get("/", productController.getProducts);
+router.get(
+  "/",
+
+  productController.getProducts,
+);
 router.get("/category/:id", productController.getProductsCategory);
+
+router.get("/related-products/:id", productController.relatedProducts);
 
 router.get("/search/", productController.searchProducts);
 module.exports = router;

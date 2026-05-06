@@ -5,7 +5,7 @@ module.exports.checkPermission = (permission) => {
   return async (req, res, next) => {
     try {
       const account_id = req.account.id;
-      console.log("account_id", account_id);
+      // console.log("account_id", account_id);
       if (!account_id)
         return res.status(401).json({
           message: "Tài khoản không xác định!",
